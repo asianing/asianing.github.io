@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Victoria Nguyen | Digital Portfolio</title>
+    <style>
+        /* CSS: Making it look clean and professional */
+        :root {
+            --primary-pink: #ff85a1;
+            --soft-bg: #fff9fb;
+            --text-dark: #2d3436;
+            --accent: #a29bfe;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--soft-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 50px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 133, 161, 0.1);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: var(--primary-pink);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+        }
+
+        /* The Game Section */
+        #game-container {
+            width: 100%;
+            height: 400px;
+            background-color: #ffeef2;
+            border: 3px dashed var(--primary-pink);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-placeholder-text {
+            color: var(--primary-pink);
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* Resume Styling */
+        .section-title {
+            border-left: 5px solid var(--primary-pink);
+            padding-left: 15px;
+            margin-top: 40px;
+            color: var(--text-dark);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #b2bec3;
+            margin-top: 50px;
+        }
+
+        /* Responsive for mobile */
+        @media (max-width: 600px) {
+            .grid { grid-template-columns: 1fr; }
+            .container { margin: 10px; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Victoria Nguyen</h1>
+        <div class="subtitle">Mechanical Engineering & Game Development</div>
+        <p>University of Texas at San Antonio | Aerospace Certificate Candidate</p>
+    </header>
+
+    <h2 class="section-title">Play My Mini-Game</h2>
+    <div id="game-container">
+        <div class="game-placeholder-text">
+            <div style="font-size: 3rem;">🎮</div>
+            <p>KABOOM.JS GAME COMING SOON</p>
+            <small>(Currently working on the mechanics!)</small>
+        </div>
+    </div>
+
+    <div class="grid">
+        <div>
+            <h2 class="section-title">Education</h2>
+            <p><strong>UT San Antonio</strong><br>
+            B.S. Mechanical Engineering<br>
+            <em>Focus: Aerospace & Robotics</em></p>
+        </div>
+        <div>
+            <h2 class="section-title">Technical Skills</h2>
+            <ul>
+                <li>Luau (Roblox Studio)</li>
+                <li>3D Modeling (Blender)</li>
+                <li>Additive Manufacturing</li>
+                <li>Digital Art & Logo Design</li>
+            </ul>
+        </div>
+    </div>
+
+    <h2 class="section-title">Projects</h2>
+    <ul>
+        <li><strong>EcoGenZ:</strong> An environmental educational game developed in Luau.</li>
+        <li><strong>Custom Owala Accessories:</strong> 3D printed functional components.</li>
+        <li><strong>Nullarchive:</strong> A tech-noir Roblox environment project.</li>
+    </ul>
+
+    <footer>
+        &copy; 2026 Victoria Nguyen Digitals. Built with HTML, CSS, and Caffeine.
+    </footer>
+</div>
+
+</body>
+</html>
