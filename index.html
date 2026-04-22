@@ -1,161 +1,1025 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Victoria Nguyen | Digital Portfolio</title>
-    <style>
-        /* CSS: Making it look clean and professional */
-        :root {
-            --primary-pink: #ff85a1;
-            --soft-bg: #fff9fb;
-            --text-dark: #2d3436;
-            --accent: #a29bfe;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Victoria Nguyen | Engineering & Game Dev Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #ff85a1;
+    --pink-dark: #d6426a;
+    --pink-glow: rgba(255,133,161,0.15);
+    --violet: #a29bfe;
+    --violet-dark: #6c5ce7;
+    --bg: #0a0812;
+    --bg2: #100f1a;
+    --bg3: #16142a;
+    --text: #f0eeff;
+    --muted: #8a85b0;
+    --border: rgba(162,155,254,0.18);
+    --card-bg: rgba(22,20,42,0.85);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    cursor: none;
+  }
 
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--soft-bg);
-            color: var(--text-dark);
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-        }
+  /* CUSTOM CURSOR */
+  #cursor {
+    position: fixed; top: 0; left: 0;
+    width: 12px; height: 12px;
+    background: var(--pink);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, background 0.2s;
+    mix-blend-mode: screen;
+  }
+  #cursor-ring {
+    position: fixed; top: 0; left: 0;
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--violet);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.18s ease, width 0.2s, height 0.2s, border-color 0.2s;
+  }
+  body:has(a:hover) #cursor-ring,
+  body:has(button:hover) #cursor-ring { width: 56px; height: 56px; border-color: var(--pink); }
 
-        .container {
-            max-width: 850px;
-            margin: 50px auto;
-            padding: 40px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(255, 133, 161, 0.1);
-        }
+  /* PARTICLE CANVAS */
+  #particle-canvas {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
 
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
+  /* LAYOUT */
+  .wrap { position: relative; z-index: 1; max-width: 980px; margin: 0 auto; padding: 0 32px; }
 
-        h1 {
-            color: var(--primary-pink);
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            letter-spacing: -1px;
-        }
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 0;
+    background: linear-gradient(to bottom, rgba(10,8,18,0.95), transparent);
+    backdrop-filter: blur(4px);
+  }
+  nav .wrap { display: flex; justify-content: space-between; align-items: center; }
+  .nav-logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--pink);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+    font-family: 'Space Mono', monospace;
+  }
+  .nav-links a:hover { color: var(--text); }
 
-        .subtitle {
-            font-weight: 600;
-            color: var(--accent);
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-        }
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 120px 0 80px;
+  }
+  .hero-inner { max-width: 740px; }
+  .hero-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--violet);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .hero-tag::before {
+    content: '';
+    display: block; width: 40px; height: 1px;
+    background: var(--violet);
+  }
+  h1.hero-name {
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+  }
+  h1.hero-name .line1 { display: block; color: var(--text); }
+  h1.hero-name .line2 {
+    display: block;
+    -webkit-text-stroke: 1.5px var(--pink);
+    color: transparent;
+  }
+  .hero-desc {
+    font-size: 16px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 480px;
+    margin-bottom: 40px;
+    font-weight: 400;
+  }
+  .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block;
+    padding: 14px 28px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.25s;
+  }
+  .btn-primary {
+    background: var(--pink);
+    color: #0a0812;
+  }
+  .btn-primary:hover { background: var(--pink-dark); transform: translateY(-2px); }
+  .btn-outline {
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--text);
+  }
+  .btn-outline:hover { border-color: var(--violet); color: var(--violet); transform: translateY(-2px); }
 
-        /* The Game Section */
-        #game-container {
-            width: 100%;
-            height: 400px;
-            background-color: #ffeef2;
-            border: 3px dashed var(--primary-pink);
-            border-radius: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin: 30px 0;
-            position: relative;
-            overflow: hidden;
-        }
+  .scroll-hint {
+    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    font-family: 'Space Mono', monospace; font-size: 10px;
+    color: var(--muted); letter-spacing: 2px; text-transform: uppercase;
+  }
+  .scroll-hint .arrow {
+    width: 1px; height: 50px; background: var(--border);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.3); }
+  }
 
-        .game-placeholder-text {
-            color: var(--primary-pink);
-            font-weight: bold;
-            text-align: center;
-        }
+  /* SECTIONS */
+  section { padding: 100px 0; }
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 5px;
+    color: var(--pink);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    margin-bottom: 48px;
+  }
+  .section-line {
+    width: 60px; height: 2px;
+    background: var(--pink);
+    margin-bottom: 48px;
+  }
 
-        /* Resume Styling */
-        .section-title {
-            border-left: 5px solid var(--primary-pink);
-            padding-left: 15px;
-            margin-top: 40px;
-            color: var(--text-dark);
-        }
+  /* ABOUT GRID */
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+  .about-text { font-size: 15px; color: var(--muted); line-height: 1.8; }
+  .about-text p + p { margin-top: 16px; }
+  .about-text strong { color: var(--text); }
+  .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .skill-tag {
+    padding: 12px 16px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--violet);
+    letter-spacing: 1px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .skill-tag:hover { border-color: var(--pink); color: var(--pink); transform: translateX(4px); }
 
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
+  /* PORTFOLIO GRID */
+  .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+  .portfolio-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+    position: relative;
+    cursor: none;
+  }
+  .portfolio-card:hover { border-color: var(--pink); transform: translateY(-6px); }
+  .card-img {
+    width: 100%; height: 200px;
+    background: var(--bg3);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; position: relative;
+  }
+  .card-img-placeholder {
+    font-size: 60px;
+    opacity: 0.2;
+    user-select: none;
+    font-family: 'Space Mono', monospace;
+  }
+  .card-img-label {
+    position: absolute; bottom: 12px; left: 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; letter-spacing: 2px;
+    color: var(--muted); text-transform: uppercase;
+  }
+  .card-img img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
+  .card-body { padding: 20px; }
+  .card-type {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; letter-spacing: 3px;
+    color: var(--pink); text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .card-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .card-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
-        ul {
-            padding-left: 20px;
-        }
+  /* UPLOAD CALLOUT */
+  .upload-callout {
+    margin-top: 40px;
+    padding: 32px;
+    border: 1px dashed rgba(162,155,254,0.3);
+    text-align: center;
+    background: rgba(162,155,254,0.03);
+  }
+  .upload-callout p { color: var(--muted); font-size: 14px; line-height: 1.7; }
+  .upload-callout code {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    background: rgba(255,133,161,0.1);
+    color: var(--pink);
+    padding: 2px 6px;
+  }
 
-        li {
-            margin-bottom: 8px;
-        }
+  /* GAME SECTION */
+  #game { background: var(--bg2); }
+  #game-wrap {
+    background: #000;
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+    max-width: 700px;
+  }
+  #gameCanvas { display: block; width: 100%; }
+  #game-ui {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.88);
+    transition: opacity 0.4s;
+  }
+  #game-ui.hidden { opacity: 0; pointer-events: none; }
+  .game-title-big {
+    font-size: 42px; font-weight: 800;
+    letter-spacing: -1px; margin-bottom: 8px;
+    color: var(--pink);
+  }
+  .game-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px; letter-spacing: 3px; color: var(--muted);
+    margin-bottom: 32px; text-transform: uppercase;
+  }
+  .game-instructions { font-size: 13px; color: var(--muted); margin-bottom: 28px; text-align: center; line-height: 1.8; }
+  .game-instructions span { color: var(--violet); font-family: 'Space Mono', monospace; }
+  #game-score-display {
+    position: absolute; top: 16px; left: 0; right: 0;
+    display: flex; justify-content: space-between; padding: 0 20px;
+    pointer-events: none;
+  }
+  .hud {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px; letter-spacing: 2px;
+    color: var(--pink); text-transform: uppercase;
+  }
 
-        footer {
-            text-align: center;
-            font-size: 0.8rem;
-            color: #b2bec3;
-            margin-top: 50px;
-        }
+  /* CONTACT */
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .contact-link {
+    display: flex; align-items: center; gap: 16px;
+    padding: 20px 24px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.25s;
+  }
+  .contact-link:hover { border-color: var(--pink); transform: translateX(6px); }
+  .contact-icon { font-size: 24px; width: 40px; text-align: center; }
+  .contact-label { font-size: 11px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; font-family: 'Space Mono', monospace; }
+  .contact-val { font-size: 15px; font-weight: 700; }
 
-        /* Responsive for mobile */
-        @media (max-width: 600px) {
-            .grid { grid-template-columns: 1fr; }
-            .container { margin: 10px; padding: 20px; }
-        }
-    </style>
+  /* FOOTER */
+  footer {
+    padding: 40px 0;
+    border-top: 1px solid var(--border);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 16px;
+  }
+
+  /* REVEAL ANIMATION */
+  .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 680px) {
+    .about-grid, .contact-grid { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: 1fr; }
+    nav .nav-links { display: none; }
+    .hero-inner { max-width: 100%; }
+  }
+</style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>Victoria Nguyen</h1>
-        <div class="subtitle">Mechanical Engineering & Game Development</div>
-        <p>University of Texas at San Antonio | Aerospace Certificate Candidate</p>
-    </header>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<canvas id="particle-canvas"></canvas>
 
-    <h2 class="section-title">Play My Mini-Game</h2>
-    <div id="game-container">
-        <div class="game-placeholder-text">
-            <div style="font-size: 3rem;">🎮</div>
-            <p>KABOOM.JS GAME COMING SOON</p>
-            <small>(Currently working on the mechanics!)</small>
-        </div>
-    </div>
-
-    <div class="grid">
-        <div>
-            <h2 class="section-title">Education</h2>
-            <p><strong>UT San Antonio</strong><br>
-            B.S. Mechanical Engineering<br>
-            <em>Focus: Aerospace & Robotics</em></p>
-        </div>
-        <div>
-            <h2 class="section-title">Technical Skills</h2>
-            <ul>
-                <li>Luau (Roblox Studio)</li>
-                <li>3D Modeling (Blender)</li>
-                <li>Additive Manufacturing</li>
-                <li>Digital Art & Logo Design</li>
-            </ul>
-        </div>
-    </div>
-
-    <h2 class="section-title">Projects</h2>
-    <ul>
-        <li><strong>EcoGenZ:</strong> An environmental educational game developed in Luau.</li>
-        <li><strong>Custom Owala Accessories:</strong> 3D printed functional components.</li>
-        <li><strong>Nullarchive:</strong> A tech-noir Roblox environment project.</li>
+<!-- NAV -->
+<nav>
+  <div class="wrap">
+    <a class="nav-logo" href="#">VN</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#portfolio">Work</a></li>
+      <li><a href="#game">Play</a></li>
+      <li><a href="#contact">Contact</a></li>
     </ul>
+  </div>
+</nav>
 
-    <footer>
-        &copy; 2026 Victoria Nguyen Digitals. Built with HTML, CSS, and Caffeine.
-    </footer>
+<!-- HERO -->
+<section id="hero">
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="hero-tag">Mechanical Engineering & Game Dev</div>
+      <h1 class="hero-name">
+        <span class="line1">Victoria</span>
+        <span class="line2">Nguyen</span>
+      </h1>
+      <p class="hero-desc">
+        Engineering student at <strong>UT San Antonio</strong> — building at the intersection of aerospace, 3D fabrication, and game development. I make things that work, look sharp, and occasionally go into orbit.
+      </p>
+      <div class="hero-btns">
+        <a href="#portfolio" class="btn btn-primary">View My Work</a>
+        <a href="#game" class="btn btn-outline">Play Mini-Game</a>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <div class="arrow"></div>
+      Scroll
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="wrap">
+    <div class="section-label">Background</div>
+    <h2 class="section-title reveal">About Me</h2>
+    <div class="about-grid reveal">
+      <div class="about-text">
+        <p>I'm a <strong>Mechanical Engineering student</strong> at the University of Texas at San Antonio, pursuing an Aerospace Certificate. My work lives at the crossroads of precision engineering and creative expression.</p>
+        <p>From designing <strong>3D-printed functional prototypes</strong> to scripting immersive Roblox environments in Luau — I build things end to end. I care deeply about how objects feel, move, and exist in space.</p>
+        <p>Currently developing <strong>EcoGenZ</strong>, an environmental education game, and expanding my Blender + CAD portfolio toward aerospace applications.</p>
+      </div>
+      <div>
+        <div class="section-label" style="margin-bottom: 16px;">Tech Stack</div>
+        <div class="skills-grid">
+          <div class="skill-tag">Luau / Roblox</div>
+          <div class="skill-tag">Blender 3D</div>
+          <div class="skill-tag">CAD Design</div>
+          <div class="skill-tag">Additive MFG</div>
+          <div class="skill-tag">Digital Art</div>
+          <div class="skill-tag">Logo Design</div>
+          <div class="skill-tag">Aerospace Eng.</div>
+          <div class="skill-tag">Game Dev</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="wrap">
+    <div class="section-label">Creative Work</div>
+    <h2 class="section-title reveal">Portfolio</h2>
+    <div class="portfolio-grid">
+
+      <div class="portfolio-card reveal">
+        <div class="card-img">
+          <!-- TO ADD IMAGE: replace the div below with: <img src="images/ecogenz.jpg" alt="EcoGenZ"> -->
+          <div class="card-img-placeholder">⬡</div>
+          <div class="card-img-label">Game Dev</div>
+        </div>
+        <div class="card-body">
+          <div class="card-type">Luau · Roblox Studio</div>
+          <div class="card-title">EcoGenZ</div>
+          <div class="card-desc">An environmental education game built in Luau. Players explore ecosystems, learn sustainability principles, and solve engineering challenges.</div>
+        </div>
+      </div>
+
+      <div class="portfolio-card reveal">
+        <div class="card-img">
+          <!-- TO ADD IMAGE: <img src="images/owala.jpg" alt="Owala Accessories"> -->
+          <div class="card-img-placeholder">◈</div>
+          <div class="card-img-label">3D Print</div>
+        </div>
+        <div class="card-body">
+          <div class="card-type">CAD · Additive Manufacturing</div>
+          <div class="card-title">Owala Accessories</div>
+          <div class="card-desc">Functional 3D-printed components designed to extend and customize Owala water bottles. Form meets engineering precision.</div>
+        </div>
+      </div>
+
+      <div class="portfolio-card reveal">
+        <div class="card-img">
+          <!-- TO ADD IMAGE: <img src="images/nullarchive.jpg" alt="Nullarchive"> -->
+          <div class="card-img-placeholder">▲</div>
+          <div class="card-img-label">World Building</div>
+        </div>
+        <div class="card-body">
+          <div class="card-type">Blender · Roblox Studio</div>
+          <div class="card-title">Nullarchive</div>
+          <div class="card-desc">A tech-noir Roblox environment project. Dark aesthetics, dense atmospheric geometry, and detailed world-building set in a dystopian archive.</div>
+        </div>
+      </div>
+
+      <div class="portfolio-card reveal" style="border-style: dashed; opacity: 0.55;">
+        <div class="card-img">
+          <div class="card-img-placeholder" style="font-size: 40px; opacity: 0.5;">+</div>
+          <div class="card-img-label">Your Next Project</div>
+        </div>
+        <div class="card-body">
+          <div class="card-type">Coming Soon</div>
+          <div class="card-title">More Work</div>
+          <div class="card-desc">CAD renders, Blender scenes, and other projects. Upload your work images and update this card with your latest creations.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="upload-callout reveal">
+      <p>
+        <strong style="color: var(--text);">📁 To add your own designs:</strong> Upload images to a folder called <code>images/</code> in your GitHub repo,
+        then replace the placeholder <code>&lt;div&gt;</code> comments with <code>&lt;img&gt;</code> tags as shown in the comments above each card.
+        Recommended: 800×600px JPG or PNG.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- MINI GAME -->
+<section id="game">
+  <div class="wrap">
+    <div class="section-label">Interactive</div>
+    <h2 class="section-title reveal">Mini-Game: Orbital Drift</h2>
+    <p class="reveal" style="color: var(--muted); margin-bottom: 32px; font-size: 15px;">
+      Pilot a spacecraft through an asteroid field. Collect energy orbs to score. Built with vanilla JavaScript.
+    </p>
+    <div id="game-wrap" class="reveal">
+      <canvas id="gameCanvas" width="700" height="380"></canvas>
+      <div id="game-ui">
+        <div class="game-title-big">ORBITAL DRIFT</div>
+        <div class="game-sub">A mini-game by Victoria Nguyen</div>
+        <div class="game-instructions">
+          Move: <span>Arrow Keys</span> or <span>WASD</span><br>
+          Avoid asteroids · Collect glowing orbs<br>
+          Mobile: <span>Tap &amp; Drag</span>
+        </div>
+        <button class="btn btn-primary" id="startBtn" style="font-size: 13px;">LAUNCH SHIP</button>
+      </div>
+      <div id="game-score-display" style="display:none;">
+        <span class="hud" id="score-hud">Score: 0</span>
+        <span class="hud" id="lives-hud">Lives: ♥♥♥</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="wrap">
+    <div class="section-label">Get In Touch</div>
+    <h2 class="section-title reveal">Contact</h2>
+    <div class="contact-grid reveal">
+      <a class="contact-link" href="mailto:your@email.com">
+        <div class="contact-icon">✉</div>
+        <div>
+          <div class="contact-label">Email</div>
+          <div class="contact-val">your@email.com</div>
+        </div>
+      </a>
+      <a class="contact-link" href="https://linkedin.com/in/yourprofile" target="_blank">
+        <div class="contact-icon">in</div>
+        <div>
+          <div class="contact-label">LinkedIn</div>
+          <div class="contact-val">linkedin.com/in/yourprofile</div>
+        </div>
+      </a>
+      <a class="contact-link" href="https://github.com/yourusername" target="_blank">
+        <div class="contact-icon">⌥</div>
+        <div>
+          <div class="contact-label">GitHub</div>
+          <div class="contact-val">github.com/yourusername</div>
+        </div>
+      </a>
+      <a class="contact-link" href="https://www.roblox.com/users/yourid/profile" target="_blank">
+        <div class="contact-icon">◉</div>
+        <div>
+          <div class="contact-label">Roblox</div>
+          <div class="contact-val">Roblox Profile</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <footer>
+    <span>© 2026 Victoria Nguyen. Built with HTML, CSS & Caffeine.</span>
+    <span style="color: var(--pink);">ME · UTSA · Aerospace</span>
+  </footer>
 </div>
 
+<script>
+/* ============================================================
+   CURSOR
+============================================================ */
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+function animCursor() {
+  cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+  rx += (mx - rx) * 0.15; ry += (my - ry) * 0.15;
+  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+  requestAnimationFrame(animCursor);
+}
+animCursor();
+
+/* ============================================================
+   PARTICLE ACCELERATOR BACKGROUND
+============================================================ */
+(function() {
+  const canvas = document.getElementById('particle-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles, rings, beams;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // Orbital rings (the accelerator rings)
+  function initRings() {
+    rings = [];
+    const count = 4;
+    for (let i = 0; i < count; i++) {
+      rings.push({
+        cx: W * 0.5 + (Math.random() - 0.5) * W * 0.3,
+        cy: H * 0.5 + (Math.random() - 0.5) * H * 0.3,
+        rx: 120 + i * 90 + Math.random() * 60,
+        ry: 50 + i * 30 + Math.random() * 30,
+        angle: Math.random() * Math.PI * 2,
+        tilt: Math.random() * 0.4,
+        opacity: 0.04 + Math.random() * 0.06,
+        color: i % 2 === 0 ? '#ff85a1' : '#a29bfe'
+      });
+    }
+  }
+
+  // Beam particles traveling along the rings
+  function initParticles() {
+    particles = [];
+    for (let i = 0; i < 120; i++) {
+      const ringIdx = Math.floor(Math.random() * rings.length);
+      particles.push({
+        ring: ringIdx,
+        t: Math.random(),
+        speed: (0.0003 + Math.random() * 0.0006) * (Math.random() > 0.5 ? 1 : -1),
+        size: 1 + Math.random() * 2.5,
+        brightness: 0.5 + Math.random() * 0.5,
+        color: Math.random() > 0.6 ? '#ff85a1' : '#a29bfe',
+        trail: []
+      });
+    }
+    // Add free-floating background particles
+    for (let i = 0; i < 60; i++) {
+      particles.push({
+        ring: -1,
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        size: 0.5 + Math.random(),
+        opacity: 0.1 + Math.random() * 0.2,
+        color: '#a29bfe'
+      });
+    }
+  }
+
+  function getPos(p) {
+    const r = rings[p.ring];
+    const x = r.cx + Math.cos(p.t * Math.PI * 2) * r.rx;
+    const y = r.cy + Math.sin(p.t * Math.PI * 2) * r.ry * Math.cos(r.tilt) + Math.cos(p.t * Math.PI * 2) * r.ry * Math.sin(r.tilt) * 0.3;
+    return { x, y };
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    // Draw orbital rings
+    rings.forEach(r => {
+      ctx.save();
+      ctx.beginPath();
+      ctx.ellipse(r.cx, r.cy, r.rx, r.ry * Math.cos(r.tilt), r.tilt, 0, Math.PI * 2);
+      ctx.strokeStyle = r.color;
+      ctx.globalAlpha = r.opacity;
+      ctx.lineWidth = 0.5;
+      ctx.stroke();
+      ctx.restore();
+    });
+
+    // Update and draw particles
+    particles.forEach(p => {
+      if (p.ring === -1) {
+        // Free-floating
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+        if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.opacity;
+        ctx.fill();
+        return;
+      }
+
+      p.t += p.speed;
+      if (p.t > 1) p.t -= 1;
+      if (p.t < 0) p.t += 1;
+
+      const pos = getPos(p);
+      p.trail.unshift({ x: pos.x, y: pos.y });
+      if (p.trail.length > 18) p.trail.pop();
+
+      // Trail
+      for (let i = 1; i < p.trail.length; i++) {
+        const a = (1 - i / p.trail.length) * 0.4 * p.brightness;
+        ctx.beginPath();
+        ctx.moveTo(p.trail[i - 1].x, p.trail[i - 1].y);
+        ctx.lineTo(p.trail[i].x, p.trail[i].y);
+        ctx.strokeStyle = p.color;
+        ctx.globalAlpha = a;
+        ctx.lineWidth = p.size * (1 - i / p.trail.length);
+        ctx.stroke();
+      }
+
+      // Head glow
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, p.size * 1.5, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = 0.8 * p.brightness;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    });
+  }
+
+  function loop() {
+    draw();
+    requestAnimationFrame(loop);
+  }
+
+  initRings();
+  initParticles();
+  loop();
+
+  // Re-init on resize
+  window.addEventListener('resize', () => { initRings(); initParticles(); });
+})();
+
+/* ============================================================
+   SCROLL REVEAL
+============================================================ */
+const revealEls = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.12 });
+revealEls.forEach(el => observer.observe(el));
+
+/* ============================================================
+   MINI GAME: ORBITAL DRIFT
+============================================================ */
+(function() {
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+  const ui = document.getElementById('game-ui');
+  const startBtn = document.getElementById('startBtn');
+  const scoreHud = document.getElementById('score-hud');
+  const livesHud = document.getElementById('lives-hud');
+  const scoreDisplay = document.getElementById('game-score-display');
+
+  const W = 700, H = 380;
+  let state = 'idle'; // idle | playing | dead
+  let ship, asteroids, orbs, stars, score, lives, frame, spawnRate, lastSpawn, lastOrb;
+  let keys = {};
+
+  // Touch support
+  let touchX = null, touchY = null;
+
+  function init() {
+    ship = { x: W / 2, y: H / 2, r: 12, vx: 0, vy: 0, angle: -Math.PI / 2, inv: 0, trail: [] };
+    asteroids = [];
+    orbs = [];
+    score = 0;
+    lives = 3;
+    frame = 0;
+    spawnRate = 90;
+    lastSpawn = 0;
+    lastOrb = 0;
+    stars = Array.from({ length: 80 }, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.2,
+      b: 0.2 + Math.random() * 0.6
+    }));
+  }
+
+  function spawnAsteroid() {
+    const edge = Math.floor(Math.random() * 4);
+    let x, y;
+    if (edge === 0) { x = Math.random() * W; y = -20; }
+    else if (edge === 1) { x = W + 20; y = Math.random() * H; }
+    else if (edge === 2) { x = Math.random() * W; y = H + 20; }
+    else { x = -20; y = Math.random() * H; }
+    const ang = Math.atan2(H / 2 - y, W / 2 - x) + (Math.random() - 0.5) * 1.2;
+    const speed = 1 + Math.random() * 2;
+    const r = 12 + Math.random() * 18;
+    const pts = Array.from({ length: 8 }, (_, i) => ({
+      a: (i / 8) * Math.PI * 2,
+      d: r * (0.7 + Math.random() * 0.6)
+    }));
+    asteroids.push({ x, y, vx: Math.cos(ang) * speed, vy: Math.sin(ang) * speed, r, pts, rot: 0, rotSpeed: (Math.random() - 0.5) * 0.05 });
+  }
+
+  function spawnOrb() {
+    orbs.push({
+      x: 40 + Math.random() * (W - 80),
+      y: 40 + Math.random() * (H - 80),
+      r: 7,
+      pulse: Math.random() * Math.PI * 2,
+      life: 300
+    });
+  }
+
+  function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+
+  function update() {
+    frame++;
+    ship.inv = Math.max(0, ship.inv - 1);
+
+    // Input
+    let ax = 0, ay = 0;
+    if (keys['ArrowLeft'] || keys['a'] || keys['A']) ax -= 1;
+    if (keys['ArrowRight'] || keys['d'] || keys['D']) ax += 1;
+    if (keys['ArrowUp'] || keys['w'] || keys['W']) ay -= 1;
+    if (keys['ArrowDown'] || keys['s'] || keys['S']) ay += 1;
+
+    // Touch drag
+    if (touchX !== null) {
+      const dx = touchX - ship.x, dy = touchY - ship.y;
+      const td = Math.hypot(dx, dy);
+      if (td > 10) { ax = dx / td; ay = dy / td; }
+    }
+
+    const mag = Math.hypot(ax, ay);
+    if (mag > 0) { ax /= mag; ay /= mag; }
+    ship.vx += ax * 0.35; ship.vy += ay * 0.35;
+    ship.vx *= 0.92; ship.vy *= 0.92;
+    if (ax !== 0 || ay !== 0) ship.angle = Math.atan2(ay, ax);
+
+    ship.x += ship.vx; ship.y += ship.vy;
+    ship.x = Math.max(ship.r, Math.min(W - ship.r, ship.x));
+    ship.y = Math.max(ship.r, Math.min(H - ship.r, ship.y));
+
+    ship.trail.unshift({ x: ship.x, y: ship.y });
+    if (ship.trail.length > 12) ship.trail.pop();
+
+    // Asteroids
+    if (frame - lastSpawn > spawnRate) {
+      spawnAsteroid();
+      lastSpawn = frame;
+      spawnRate = Math.max(30, spawnRate - 0.5);
+    }
+    asteroids.forEach(a => {
+      a.x += a.vx; a.y += a.vy; a.rot += a.rotSpeed;
+    });
+    asteroids = asteroids.filter(a => a.x > -60 && a.x < W + 60 && a.y > -60 && a.y < H + 60);
+
+    // Orbs
+    if (frame - lastOrb > 120) { spawnOrb(); lastOrb = frame; }
+    orbs.forEach(o => { o.pulse += 0.08; o.life--; });
+    orbs = orbs.filter(o => o.life > 0);
+
+    // Collisions
+    if (ship.inv === 0) {
+      asteroids.forEach(a => {
+        if (dist(ship, a) < ship.r + a.r * 0.7) {
+          ship.inv = 90;
+          lives--;
+          livesHud.textContent = 'Lives: ' + '♥'.repeat(Math.max(0, lives));
+          if (lives <= 0) { state = 'dead'; showGameOver(); }
+        }
+      });
+    }
+    orbs = orbs.filter(o => {
+      if (dist(ship, o) < ship.r + o.r + 4) {
+        score += 10;
+        scoreHud.textContent = 'Score: ' + score;
+        return false;
+      }
+      return true;
+    });
+  }
+
+  function drawAsteroid(a) {
+    ctx.save();
+    ctx.translate(a.x, a.y);
+    ctx.rotate(a.rot);
+    ctx.beginPath();
+    a.pts.forEach((pt, i) => {
+      const px = Math.cos(pt.a) * pt.d;
+      const py = Math.sin(pt.a) * pt.d;
+      i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+    });
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(80,70,100,0.7)';
+    ctx.strokeStyle = '#a29bfe';
+    ctx.lineWidth = 1;
+    ctx.fill(); ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawShip() {
+    if (ship.inv > 0 && Math.floor(ship.inv / 6) % 2 === 0) return;
+    // Trail
+    ship.trail.forEach((t, i) => {
+      const a = (1 - i / ship.trail.length) * 0.35;
+      ctx.beginPath();
+      ctx.arc(t.x, t.y, 3 * (1 - i / ship.trail.length), 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,133,161,${a})`;
+      ctx.fill();
+    });
+    ctx.save();
+    ctx.translate(ship.x, ship.y);
+    ctx.rotate(ship.angle + Math.PI / 2);
+    // Ship body
+    ctx.beginPath();
+    ctx.moveTo(0, -14);
+    ctx.lineTo(9, 10);
+    ctx.lineTo(0, 6);
+    ctx.lineTo(-9, 10);
+    ctx.closePath();
+    ctx.fillStyle = '#ff85a1';
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1;
+    ctx.fill(); ctx.stroke();
+    // Engine glow
+    if (Math.hypot(ship.vx, ship.vy) > 0.3) {
+      ctx.beginPath();
+      ctx.moveTo(-5, 8); ctx.lineTo(0, 18 + Math.random() * 6); ctx.lineTo(5, 8);
+      ctx.fillStyle = 'rgba(162,155,254,0.7)';
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function drawOrb(o) {
+    const pulse = Math.sin(o.pulse) * 2;
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(o.x, o.y, o.r + pulse, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(162,155,254,0.15)';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(o.x, o.y, o.r, 0, Math.PI * 2);
+    ctx.fillStyle = '#a29bfe';
+    ctx.shadowColor = '#a29bfe';
+    ctx.shadowBlur = 10;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    // Fade out near end
+    if (o.life < 60) {
+      ctx.beginPath();
+      ctx.arc(o.x, o.y, o.r + pulse, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0,0,0,${1 - o.life / 60})`;
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    // Background
+    ctx.fillStyle = '#050410';
+    ctx.fillRect(0, 0, W, H);
+    // Stars
+    stars.forEach(s => {
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(200,190,255,${s.b})`;
+      ctx.fill();
+    });
+
+    if (state === 'playing') {
+      asteroids.forEach(drawAsteroid);
+      orbs.forEach(drawOrb);
+      drawShip();
+    }
+  }
+
+  function loop() {
+    if (state === 'playing') update();
+    render();
+    requestAnimationFrame(loop);
+  }
+
+  function showGameOver() {
+    ui.classList.remove('hidden');
+    ui.innerHTML = `
+      <div class="game-title-big" style="font-size:32px;color:#ff85a1;">GAME OVER</div>
+      <div class="game-sub">Final Score: ${score}</div>
+      <div class="game-instructions">You survived <span>${Math.floor(frame / 60)}s</span> in the asteroid field</div>
+      <button class="btn btn-primary" id="restartBtn" style="font-size:13px;">TRY AGAIN</button>
+    `;
+    document.getElementById('restartBtn').addEventListener('click', startGame);
+  }
+
+  function startGame() {
+    init();
+    state = 'playing';
+    ui.classList.add('hidden');
+    scoreDisplay.style.display = 'flex';
+    scoreHud.textContent = 'Score: 0';
+    livesHud.textContent = 'Lives: ♥♥♥';
+  }
+
+  startBtn.addEventListener('click', startGame);
+
+  // Keyboard
+  document.addEventListener('keydown', e => { keys[e.key] = true; e.preventDefault && ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key) && e.preventDefault(); });
+  document.addEventListener('keyup', e => { keys[e.key] = false; });
+
+  // Touch
+  canvas.addEventListener('touchstart', e => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = W / rect.width;
+    const t = e.touches[0];
+    touchX = (t.clientX - rect.left) * scaleX;
+    touchY = (t.clientY - rect.top) * scaleX;
+    e.preventDefault();
+  }, { passive: false });
+  canvas.addEventListener('touchmove', e => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = W / rect.width;
+    const t = e.touches[0];
+    touchX = (t.clientX - rect.left) * scaleX;
+    touchY = (t.clientY - rect.top) * scaleX;
+    e.preventDefault();
+  }, { passive: false });
+  canvas.addEventListener('touchend', () => { touchX = null; touchY = null; });
+
+  loop();
+})();
+</script>
 </body>
 </html>
