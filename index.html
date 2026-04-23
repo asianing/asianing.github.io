@@ -164,6 +164,17 @@ section{padding:100px 0;}
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
 .contact-link{display:flex;align-items:center;gap:16px;padding:20px 24px;background:var(--card-bg);border:1px solid var(--border);text-decoration:none;color:var(--text);transition:all .25s;}
 .contact-link:hover{border-color:var(--pink);transform:translateX(6px);}
+.contact-link-email {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  pointer-events: auto;
+}
+
+.contact-link-email:hover {
+  border-color: var(--pink);
+  transform: translateX(6px);
+}
 .contact-icon{font-size:20px;width:36px;text-align:center;}
 .contact-label{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
 .contact-val{font-size:15px;font-weight:700;}
@@ -423,9 +434,9 @@ footer{padding:40px 0;border-top:1px solid var(--border);font-family:'Space Mono
     <div class="section-label">Get In Touch</div>
     <h2 class="section-title reveal">Contact</h2>
     <div class="contact-grid reveal">
-      <a class="contact-link" href="mailto:your@email.com">
+      <div class="contact-link contact-link-email" style="cursor: text; user-select: text;">
         <div class="contact-icon">✉</div><div><div class="contact-label">Email</div><div class="contact-val">your@email.com</div></div>
-      </a>
+      </div>
       <a class="contact-link" href="https://linkedin.com/in/yourprofile" target="_blank">
         <div class="contact-icon">in</div><div><div class="contact-label">LinkedIn</div><div class="contact-val">linkedin.com/in/yourprofile</div></div>
       </a>
