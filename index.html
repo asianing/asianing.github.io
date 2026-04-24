@@ -968,20 +968,36 @@ fetchLeaderboard();
   btnRestart.addEventListener('click',startGame);
   btnSeeLB.addEventListener('click',function(){document.getElementById('leaderboard-section').scrollIntoView({behavior:'smooth'});});
 
-  btnSave.addEventListener('click',function(){
-    var name=saveNameEl.value.trim();
-    if(!name){saveMsgEl.textContent='Please enter your name to save.';saveMsgEl.style.color='#ff85a1';return;}
-    var linkedin=saveLinkedinEl.value.trim();
-    btnSave.textContent='SAVING...';btnSave.disabled=true;
-    postScore(name,linkedin,score,wave).then(function(res){
-      if(res.error){saveMsgEl.textContent='Error: '+res.error.message;saveMsgEl.style.color='#ff85a1';btnSave.disabled=false;btnSave.textContent='SAVE TO LEADERBOARD';}
-      else{saveMsgEl.textContent='Saved! You\'re on the leaderboard.';saveMsgEl.style.color='#55efc4';btnSave.textContent='SAVED ✓';fetchLeaderboard();}
+// --- LEADERBOARD SAVE SYSTEM ---
+  btnSave.addEventListener('click', function() {
+    var name = saveNameEl.value.trim();
+    if (!name) {
+      saveMsgEl.textContent = 'Please enter your name to save.';
+      saveMsgEl.style.color = '#ff85a1';
+      return;
+    }
+    var linkedin = saveLinkedinEl.value.trim();
+    btnSave.textContent = 'SAVING...';
+    btnSave.disabled = true;
+
+    postScore(name, linkedin, score, wave).then(function(res) {
+      if (res.error) {
+        saveMsgEl.textContent = 'Error: ' + res.error.message;
+        saveMsgEl.style.color = '#ff85a1';
+        btnSave.disabled = false;
+        btnSave.textContent = 'SAVE TO LEADERBOARD';
+      } else {
+        saveMsgEl.textContent = 'Saved! You\'re on the leaderboard.';
+        saveMsgEl.style.color = '#55efc4';
+        btnSave.textContent = 'SAVED ✓';
+        fetchLeaderboard();
+      }
     });
+  }); // <--- THIS CLOSES the Leaderboard Save listener properly
+
   /* --- FEEDBACK SYSTEM --- */
-  
-  // 1. Find the button in your HTML
   const btnFeedback = document.getElementById('btn-feedback');
-  
+
   if (btnFeedback) {
     btnFeedback.addEventListener('click', async function() {
       const msgEl = document.getElementById('fb-msg');
@@ -1000,31 +1016,28 @@ fetchLeaderboard();
       btnFeedback.textContent = 'SENDING...';
       btnFeedback.disabled = true;
 
-      // 2. Send to Supabase
       const { error } = await supabase
         .from('feedback')
-        .insert([{ 
-          name: name || 'Anonymous', 
-          email: email, 
-          linkedin: linkedin, 
-          subject: subject, 
-          message: message 
+        .insert([{
+          name: name || 'Anonymous',
+          email: email,
+          linkedin: linkedin,
+          subject: subject,
+          message: message
         }]);
 
       if (error) {
-        console.error(error);
-        msgEl.textContent = 'Error sending feedback.';
+        console.error('Feedback Error:', error);
+        msgEl.textContent = 'Error: ' + error.message;
         msgEl.style.color = '#ff85a1';
         btnFeedback.disabled = false;
         btnFeedback.textContent = 'SEND FEEDBACK';
       } else {
-        // 3. Hide form and show thanks
         document.getElementById('feedback-form').style.display = 'none';
         document.getElementById('fb-thanks').style.display = 'block';
       }
     });
   }
-  });
 
   document.addEventListener('keydown',function(e){keys[e.key]=true;if(gameState==='playing'&&['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].indexOf(e.key)!==-1)e.preventDefault();});
   document.addEventListener('keyup',function(e){keys[e.key]=false;});
