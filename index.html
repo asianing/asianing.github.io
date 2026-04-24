@@ -432,9 +432,8 @@ footer{padding:40px 0;border-top:1px solid var(--border);font-family:'Space Mono
    !! PASTE YOUR GOOGLE APPS SCRIPT URLs HERE !!
    (Follow the setup guide in the README — takes ~10 minutes)
 ============================================================ */
-var LEADERBOARD_URL = 'https://script.google.com/macros/s/AKfycbzZIMyUmB1qDnbW8V3Q9TCUmab2WkkhSx0UWPM6WgDcAtvyVTAnee1k4-hO1uQqa-viQw/exec';
-var FEEDBACK_URL    = 'https://script.google.com/macros/s/AKfycbyDZ1sAHo7nX6dyhRhkowKYPvJbIvp1B34bU36DW8_GhRsbpRSdKHkdR9FC9j3SnoA6/exec';
-
+var LEADERBOARD_URL = 'https://formspree.io/f/xlgaakwq';
+var FEEDBACK_URL    = 'https://formspree.io/f/xnjllygl';
 /* ============================================================
    CURSOR
 ============================================================ */
@@ -538,13 +537,21 @@ function fetchLeaderboard(){
     });
 }
 
-function postScore(name,linkedin,score,wave){
-  if(LEADERBOARD_URL==='PASTE_YOUR_LEADERBOARD_SCRIPT_URL_HERE') return Promise.reject('not configured');
-  return fetch(LEADERBOARD_URL,{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({action:'post',name:name,linkedin:linkedin,score:score,wave:wave,ts:new Date().toISOString()})
-  }).then(function(r){return r.json();});
+function postScore(name, linkedin, score, wave) {
+  return fetch(LEADERBOARD_URL, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      name: name,
+      linkedin: linkedin,
+      score: score,
+      wave: wave,
+      ts: new Date().toISOString()
+    })
+  }).then(function(r) {
+    if (r.ok) return {success: true};
+    throw new Error('Failed to save');
+  });
 }
 
 document.getElementById('btn-refresh-lb').addEventListener('click',fetchLeaderboard);
