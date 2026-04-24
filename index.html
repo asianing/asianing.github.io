@@ -1109,18 +1109,33 @@ renderLB();
   btnRestart.addEventListener('click',startGame);
   btnSeeLB.addEventListener('click',function(){document.getElementById('leaderboard-section').scrollIntoView({behavior:'smooth'});});
 
-  btnSave.addEventListener('click',function(){
-    var name=saveName.value.trim();
-    var lb=loadLB();
-    lb.push({name:name,score:score,wave:wave,ts:Date.now()});
-    lb.sort(function(a,b){return b.score-a.score;});
-    if(lb.length>50)lb=lb.slice(0,50);
-    saveLB(lb);
-    renderLB();
-    saveMsg.textContent=name?'Score saved as '+name+'!':'Score saved anonymously!';
-    saveMsg.style.color='#55efc4';
-    btnSave.disabled=true;
-    btnSave.textContent='SAVED';
+  btnSave.addEventListener('click', function() {
+    var name = saveName.value.trim();
+    
+    // 1. First, load the current leaderboard from Firebase
+    window.loadLBFromFirebase().then(function(lb) {
+      // 2. Add the new score
+      lb.push({
+        name: name || 'Anonymous Pilot',
+        score: score,
+        wave: wave,
+        ts: Date.now()
+      });
+
+      // 3. Sort and trim to top 50
+      lb.sort(function(a, b) { return b.score - a.score; });
+      if (lb.length > 50) lb = lb.slice(0, 50);
+
+      // 4. Save back to Firebase
+      window.saveLBToFirebase(lb);
+      
+      // 5. Update the UI
+      renderLB();
+      saveMsg.textContent = name ? 'Score saved as ' + name + '!' : 'Score saved anonymously!';
+      saveMsg.style.color = '#55efc4';
+      btnSave.disabled = true;
+      btnSave.textContent = 'SAVED';
+    });
   });
 
   /* ---- Input ---- */
