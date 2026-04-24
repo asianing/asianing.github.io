@@ -4,18 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Victoria Nguyen | Engineering & Game Dev Portfolio</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-</head>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<!-- Supabase SDK — correct CDN import -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
-:root {
-  --pink: #ff85a1; --pink-dark: #d6426a;
-  --violet: #a29bfe; --violet-dark: #6c5ce7;
-  --gold: #ffd580; --teal: #55efc4;
-  --bg: #0a0812; --bg2: #100f1a; --bg3: #16142a;
-  --text: #f0eeff; --muted: #8a85b0;
-  --border: rgba(162,155,254,0.18);
-  --card-bg: rgba(22,20,42,0.85);
+:root{
+  --pink:#ff85a1;--pink-dark:#d6426a;
+  --violet:#a29bfe;--gold:#ffd580;--teal:#55efc4;
+  --bg:#0a0812;--bg2:#100f1a;--bg3:#16142a;
+  --text:#f0eeff;--muted:#8a85b0;
+  --border:rgba(162,155,254,0.18);--card-bg:rgba(22,20,42,0.85);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
@@ -59,6 +57,8 @@ section{padding:100px 0;}
 .skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .skill-tag{padding:12px 16px;background:var(--card-bg);border:1px solid var(--border);font-family:'Space Mono',monospace;font-size:11px;color:var(--violet);letter-spacing:1px;transition:border-color .2s,transform .2s;}
 .skill-tag:hover{border-color:var(--pink);color:var(--pink);transform:translateX(4px);}
+
+/* ===== PORTFOLIO with subfolder expand ===== */
 .portfolio-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;}
 .portfolio-card{background:var(--card-bg);border:1px solid var(--border);overflow:hidden;transition:border-color .3s,transform .3s;}
 .portfolio-card:hover{border-color:var(--pink);transform:translateY(-6px);}
@@ -70,57 +70,58 @@ section{padding:100px 0;}
 .card-type{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--pink);text-transform:uppercase;margin-bottom:8px;}
 .card-title{font-size:18px;font-weight:700;margin-bottom:8px;}
 .card-desc{font-size:13px;color:var(--muted);line-height:1.6;}
+/* Subfolder toggle */
+.card-folder-btn{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--violet);text-transform:uppercase;background:none;border:1px solid var(--border);padding:6px 12px;cursor:pointer;margin-top:12px;transition:border-color .2s,color .2s;display:block;}
+.card-folder-btn:hover{border-color:var(--violet);color:var(--text);}
+.card-subfolder{display:none;margin-top:12px;border-top:1px solid var(--border);padding-top:12px;}
+.card-subfolder.open{display:block;}
+.subfolder-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.subfolder-item{background:var(--bg3);border:1px solid var(--border);padding:8px;font-size:11px;color:var(--muted);text-align:center;cursor:pointer;transition:border-color .2s;}
+.subfolder-item:hover{border-color:var(--pink);color:var(--text);}
+.subfolder-item img{width:100%;height:60px;object-fit:cover;display:block;margin-bottom:4px;}
 .upload-callout{margin-top:40px;padding:32px;border:1px dashed rgba(162,155,254,.3);text-align:center;background:rgba(162,155,254,.03);}
 .upload-callout p{color:var(--muted);font-size:14px;line-height:1.7;}
 .upload-callout code{font-family:'Space Mono',monospace;font-size:12px;background:rgba(255,133,161,.1);color:var(--pink);padding:2px 6px;}
 
 /* ===== GAME ===== */
 #game{background:var(--bg2);}
+/* Mobile rotate notice */
+#mobile-rotate-notice{display:none;background:var(--bg3);border:1px solid var(--border);padding:20px;text-align:center;margin-bottom:16px;font-family:'Space Mono',monospace;font-size:12px;color:var(--gold);letter-spacing:1px;}
+@media(max-width:680px){#mobile-rotate-notice{display:block;}}
 #game-container{position:relative;max-width:700px;background:#050410;border:1px solid var(--border);overflow:hidden;}
 #gameCanvas{display:block;width:100%;height:auto;}
-#game-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;  /* ← CHANGE THIS */
-  background: rgba(5, 4, 16, .93);
-  z-index: 10;
-  padding: 20px;
-  overflow-y: auto;
-}
+#game-overlay{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;background:rgba(5,4,16,.93);z-index:10;padding:16px;overflow-y:auto;}
 #game-overlay.hidden{display:none;}
-.overlay-title{font-size:36px;font-weight:800;color:var(--pink);letter-spacing:-1px;margin-bottom:4px;}
+.overlay-title{font-size:32px;font-weight:800;color:var(--pink);letter-spacing:-1px;margin-bottom:4px;}
 .overlay-sub{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;}
-.overlay-narrative{font-size:12px;color:var(--violet);font-style:italic;max-width:340px;text-align:center;margin-bottom:18px;line-height:1.6;}
-.overlay-instructions{font-size:12px;color:var(--muted);text-align:center;line-height:2;margin-bottom:18px;}
+.overlay-narrative{font-size:12px;color:var(--violet);font-style:italic;max-width:340px;text-align:center;margin-bottom:14px;line-height:1.6;}
+.overlay-instructions{font-size:11px;color:var(--muted);text-align:center;line-height:1.9;margin-bottom:14px;}
 .overlay-instructions b{color:var(--violet);font-family:'Space Mono',monospace;font-weight:400;}
-.overlay-score-big{font-size:48px;font-weight:800;color:var(--pink);line-height:1;margin-bottom:4px;}
-.overlay-wave-info{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:8px;}
-.overlay-pb{font-family:'Space Mono',monospace;font-size:12px;color:var(--gold);margin-bottom:16px;}
-#game-hud{position:absolute;top:0;left:0;right:0;display:none;padding:12px 16px;z-index:5;pointer-events:none;}
+.overlay-score-big{font-size:44px;font-weight:800;color:var(--pink);line-height:1;margin-bottom:4px;}
+.overlay-wave-info{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:6px;}
+.overlay-pb{font-family:'Space Mono',monospace;font-size:12px;color:var(--gold);margin-bottom:12px;}
+#game-hud{position:absolute;top:0;left:0;right:0;display:none;padding:10px 14px;z-index:5;pointer-events:none;}
 .hud-row{display:flex;justify-content:space-between;align-items:center;}
 .hud-text{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--pink);}
 .hud-combo{font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);opacity:0;transition:opacity .3s;}
 .hud-combo.show{opacity:1;}
 .hud-wave{font-family:'Space Mono',monospace;font-size:10px;color:var(--violet);letter-spacing:2px;}
 .hud-pb{font-family:'Space Mono',monospace;font-size:10px;color:var(--gold);}
-
+/* Joystick */
+#joystick-zone{position:absolute;bottom:14px;right:14px;width:90px;height:90px;z-index:15;display:none;touch-action:none;}
+#joystick-base{position:absolute;width:90px;height:90px;border-radius:50%;background:rgba(162,155,254,.12);border:1.5px solid rgba(162,155,254,.35);}
+#joystick-knob{position:absolute;width:36px;height:36px;border-radius:50%;background:rgba(255,133,161,.75);border:2px solid #ff85a1;top:27px;left:27px;transition:box-shadow .1s;}
+#joystick-knob.active{box-shadow:0 0 12px rgba(255,133,161,.6);}
 /* Save score panel */
-#save-panel{width:100%;max-width:420px;margin-top:12px;text-align:center;}
-.save-caption{font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;}
+#save-panel{width:100%;max-width:400px;margin-top:10px;text-align:center;}
+.save-caption{font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.5;}
 .save-caption span{color:var(--violet);}
-.save-fields{display:flex;flex-direction:column;gap:8px;margin-bottom:8px;}
-.save-input{background:rgba(22,20,42,.9);border:1px solid var(--border);color:var(--text);padding:9px 14px;font-family:'Space Mono',monospace;font-size:11px;width:100%;outline:none;}
+.save-fields{display:flex;flex-direction:column;gap:7px;margin-bottom:8px;}
+.save-input{background:rgba(22,20,42,.9);border:1px solid var(--border);color:var(--text);padding:8px 12px;font-family:'Space Mono',monospace;font-size:11px;width:100%;outline:none;}
 .save-input:focus{border-color:var(--violet);}
 .save-input::placeholder{color:var(--muted);}
 .save-row{display:flex;gap:8px;justify-content:center;}
 .save-msg{font-family:'Space Mono',monospace;font-size:11px;margin-top:6px;min-height:16px;text-align:center;}
-
 /* Leaderboard */
 #leaderboard-section{margin-top:40px;max-width:700px;}
 .lb-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px;}
@@ -134,7 +135,6 @@ section{padding:100px 0;}
 .lb-rank.silver{color:#c0c8e0;}
 .lb-rank.bronze{color:#cd9a6a;}
 .lb-name{font-weight:700;color:var(--text);}
-.lb-name.anon{color:var(--muted);font-style:italic;}
 .lb-score{font-family:'Space Mono',monospace;color:var(--pink);}
 .lb-wave{font-family:'Space Mono',monospace;font-size:11px;color:var(--violet);}
 .lb-empty{font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);text-align:center;padding:24px;}
@@ -142,11 +142,8 @@ section{padding:100px 0;}
 .pb-card{background:var(--card-bg);border:1px solid var(--border);padding:14px 20px;min-width:130px;}
 .pb-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
 .pb-val{font-size:22px;font-weight:800;color:var(--pink);}
-
-/* Wave screen */
 #screen-wave{display:none;flex-direction:column;align-items:center;text-align:center;}
-
-/* ===== FEEDBACK ===== */
+/* Feedback */
 #feedback{background:var(--bg);}
 .feedback-box{max-width:600px;}
 .feedback-caption{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:28px;}
@@ -160,8 +157,7 @@ section{padding:100px 0;}
 .fb-subject select:focus{border-color:var(--violet);}
 .fb-subject select option{background:#16142a;}
 .fb-msg{font-family:'Space Mono',monospace;font-size:11px;margin-top:4px;min-height:18px;}
-
-/* ===== CONTACT ===== */
+/* Contact */
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
 .contact-link{display:flex;align-items:center;gap:16px;padding:20px 24px;background:var(--card-bg);border:1px solid var(--border);text-decoration:none;color:var(--text);transition:all .25s;}
 .contact-link:hover{border-color:var(--pink);transform:translateX(6px);}
@@ -177,6 +173,7 @@ footer{padding:40px 0;border-top:1px solid var(--border);font-family:'Space Mono
   nav .nav-links{display:none;}
   .fb-row{flex-direction:column;}
   .hero-btns{flex-direction:column;}
+  .subfolder-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -211,9 +208,7 @@ footer{padding:40px 0;border-top:1px solid var(--border);font-family:'Space Mono
       <p class="hero-desc">Engineering student at <strong style="color:var(--text)">UT San Antonio</strong> — building at the intersection of aerospace, 3D fabrication, and game development. I make things that work, look sharp, and occasionally go into orbit.</p>
       <div class="hero-btns">
         <a href="#portfolio" class="btn btn-primary">View My Work</a>
-        <!-- ▼▼▼ RESUME BUTTON — replace the href with the path to your PDF ▼▼▼ -->
         <a href="resume.pdf" target="_blank" class="btn btn-ghost">View My Resume</a>
-        <!-- ^^^  Upload resume.pdf to the ROOT of your GitHub repo ^^^ -->
         <a href="#game" class="btn btn-outline">Play Mini-Game</a>
       </div>
     </div>
@@ -251,25 +246,107 @@ footer{padding:40px 0;border-top:1px solid var(--border);font-family:'Space Mono
     <div class="section-label">Creative Work</div>
     <h2 class="section-title reveal">Portfolio</h2>
     <div class="portfolio-grid">
+
+      <!-- CARD 1: EcoGenZ — with expandable subfolder -->
       <div class="portfolio-card reveal">
-        <div class="card-img"><div class="card-img-placeholder">⬡</div><div class="card-img-label">Game Dev</div></div>
-        <div class="card-body"><div class="card-type">Luau · Roblox Studio</div><div class="card-title">EcoGenZ</div><div class="card-desc">An environmental education game built in Luau. Players explore ecosystems and solve engineering challenges.</div></div>
+        <div class="card-img">
+          <!-- TO ADD IMAGE: <img src="images/ecogenz.jpg" alt="EcoGenZ"> -->
+          <div class="card-img-placeholder">⬡</div>
+          <div class="card-img-label">Game Dev</div>
+        </div>
+        <div class="card-body">
+          <div class="card-type">Luau · Roblox Studio</div>
+          <div class="card-title">EcoGenZ</div>
+          <div class="card-desc">An environmental education game built in Luau. Players explore ecosystems and solve engineering challenges.</div>
+          <!-- SUBFOLDER: click to expand screenshots/files inside this project -->
+          <button class="card-folder-btn" onclick="toggleFolder(this)">📂 Screenshots / Files</button>
+          <div class="card-subfolder">
+            <div class="subfolder-grid">
+              <!-- TO ADD SUBFOLDER IMAGES: copy and paste these items, change src and label -->
+              <div class="subfolder-item">
+                <!-- <img src="images/ecogenz/screen1.jpg" alt="Screenshot 1"> -->
+                <div style="height:60px;display:flex;align-items:center;justify-content:center;opacity:.3;font-size:20px;">+</div>
+                Add image
+              </div>
+              <div class="subfolder-item">
+                <div style="height:60px;display:flex;align-items:center;justify-content:center;opacity:.3;font-size:20px;">+</div>
+                Add image
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <!-- CARD 2: Owala Accessories -->
       <div class="portfolio-card reveal">
-        <div class="card-img"><div class="card-img-placeholder">◈</div><div class="card-img-label">3D Print</div></div>
-        <div class="card-body"><div class="card-type">CAD · Additive Manufacturing</div><div class="card-title">Owala Accessories</div><div class="card-desc">Functional 3D-printed components designed to extend Owala water bottles. Form meets engineering precision.</div></div>
+        <div class="card-img">
+          <!-- TO ADD IMAGE: <img src="images/owala.jpg" alt="Owala"> -->
+          <div class="card-img-placeholder">◈</div>
+          <div class="card-img-label">3D Print</div>
+        </div>
+        <div class="card-body">
+          <div class="card-type">CAD · Additive Manufacturing</div>
+          <div class="card-title">Owala Accessories</div>
+          <div class="card-desc">Functional 3D-printed components designed to extend Owala water bottles. Form meets engineering precision.</div>
+          <button class="card-folder-btn" onclick="toggleFolder(this)">📂 CAD Files / Renders</button>
+          <div class="card-subfolder">
+            <div class="subfolder-grid">
+              <div class="subfolder-item">
+                <div style="height:60px;display:flex;align-items:center;justify-content:center;opacity:.3;font-size:20px;">+</div>
+                Add render
+              </div>
+              <div class="subfolder-item">
+                <div style="height:60px;display:flex;align-items:center;justify-content:center;opacity:.3;font-size:20px;">+</div>
+                Add render
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <!-- CARD 3: Nullarchive -->
       <div class="portfolio-card reveal">
-        <div class="card-img"><div class="card-img-placeholder">▲</div><div class="card-img-label">World Building</div></div>
-        <div class="card-body"><div class="card-type">Blender · Roblox Studio</div><div class="card-title">Nullarchive</div><div class="card-desc">A tech-noir Roblox environment — dark atmospheric geometry and world-building set in a dystopian archive.</div></div>
+        <div class="card-img">
+          <!-- TO ADD IMAGE: <img src="images/nullarchive.jpg" alt="Nullarchive"> -->
+          <div class="card-img-placeholder">▲</div>
+          <div class="card-img-label">World Building</div>
+        </div>
+        <div class="card-body">
+          <div class="card-type">Blender · Roblox Studio</div>
+          <div class="card-title">Nullarchive</div>
+          <div class="card-desc">A tech-noir Roblox environment — dark atmospheric geometry and world-building set in a dystopian archive.</div>
+          <button class="card-folder-btn" onclick="toggleFolder(this)">📂 Blender Renders</button>
+          <div class="card-subfolder">
+            <div class="subfolder-grid">
+              <div class="subfolder-item">
+                <div style="height:60px;display:flex;align-items:center;justify-content:center;opacity:.3;font-size:20px;">+</div>
+                Add render
+              </div>
+              <div class="subfolder-item">
+                <div style="height:60px;display:flex;align-items:center;justify-content:center;opacity:.3;font-size:20px;">+</div>
+                Add render
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <!-- CARD 4: Placeholder -->
       <div class="portfolio-card reveal" style="border-style:dashed;opacity:.5;">
-        <div class="card-img"><div class="card-img-placeholder" style="font-size:36px;opacity:.4;">+</div><div class="card-img-label">Coming Soon</div></div>
-        <div class="card-body"><div class="card-type">Your Next Project</div><div class="card-title">More Work</div><div class="card-desc">Upload images to <code style="font-family:monospace;font-size:12px;color:var(--pink);">images/</code> in your repo and drop them into any card above.</div></div>
+        <div class="card-img">
+          <div class="card-img-placeholder" style="font-size:36px;opacity:.4;">+</div>
+          <div class="card-img-label">Coming Soon</div>
+        </div>
+        <div class="card-body">
+          <div class="card-type">Your Next Project</div>
+          <div class="card-title">More Work</div>
+          <div class="card-desc">Duplicate any card above, swap the image src and text, and add subfolder images to the grid inside.</div>
+        </div>
       </div>
+
     </div>
     <div class="upload-callout reveal">
-      <p><strong style="color:var(--text);">📁 Adding your designs:</strong> Create an <code>images/</code> folder in your GitHub repo, upload JPGs/PNGs (800×600 recommended), then replace the placeholder divs with <code>&lt;img&gt;</code> tags.</p>
+      <p><strong style="color:var(--text);">📁 How to add images:</strong> Create an <code>images/</code> folder in your GitHub repo. For subfolder items, create <code>images/ecogenz/</code>, <code>images/owala/</code> etc. Use <code>&lt;img src="images/folder/file.jpg"&gt;</code> inside the subfolder grid items.</p>
     </div>
   </div>
 </section>
@@ -279,10 +356,18 @@ footer{padding:40px 0;border-top:1px solid var(--border);font-family:'Space Mono
   <div class="wrap">
     <div class="section-label">Interactive</div>
     <h2 class="section-title reveal">Mini-Game: Orbital Drift</h2>
-    <p class="reveal" style="color:var(--muted);margin-bottom:28px;font-size:15px;">Pilot Victoria's prototype through deep space. Survive waves, collect orbs, and chain combos to climb the global leaderboard.</p>
+
+    <!-- Mobile rotate notice -->
+    <div id="mobile-rotate-notice">
+      📱 For the best experience, please rotate your phone to <strong>landscape (horizontal)</strong> mode before playing!
+    </div>
+
+    <p class="reveal" style="color:var(--muted);margin-bottom:28px;font-size:15px;">Pilot Victoria's prototype through deep space. Survive waves, collect orbs, chain combos, and climb the global leaderboard.</p>
 
     <div id="game-container" class="reveal">
       <canvas id="gameCanvas" width="700" height="380"></canvas>
+
+      <!-- HUD -->
       <div id="game-hud">
         <div class="hud-row">
           <span class="hud-text" id="hud-score">Score: 0</span>
@@ -296,58 +381,64 @@ footer{padding:40px 0;border-top:1px solid var(--border);font-family:'Space Mono
         </div>
       </div>
 
+      <!-- Mobile joystick -->
+      <div id="joystick-zone">
+        <div id="joystick-base"></div>
+        <div id="joystick-knob"></div>
+      </div>
+
+      <!-- Overlay -->
       <div id="game-overlay">
-        <!-- START SCREEN -->
+        <!-- START -->
         <div id="screen-start" style="display:flex;flex-direction:column;align-items:center;text-align:center;">
           <div class="overlay-title">ORBITAL DRIFT</div>
           <div class="overlay-sub">A mini-game by Victoria Nguyen</div>
           <div class="overlay-narrative">"Victoria's prototype is escaping the Nullarchive!<br>Help it reach the Aerospace Summit."</div>
           <div class="overlay-instructions">
-            Move: <b>Arrow Keys</b> or <b>WASD</b> &nbsp;·&nbsp; Mobile: <b>Tap &amp; drag</b><br>
-            Avoid asteroids &nbsp;·&nbsp; Collect glowing orbs &nbsp;·&nbsp; Chain for <b>COMBO</b><br>
+            Desktop — Move: <b>Arrow Keys</b> or <b>WASD</b><br>
+            Mobile — Use the <b>joystick</b> in the bottom-right corner<br>
+            Avoid asteroids &nbsp;·&nbsp; Collect orbs &nbsp;·&nbsp; Chain for <b>COMBO</b><br>
             Power-ups: <b>S</b> = Shield &nbsp;·&nbsp; <b>M</b> = Slow-Mo
           </div>
           <button class="btn btn-primary btn-sm" id="btn-start">LAUNCH SHIP</button>
         </div>
 
-        <!-- GAME OVER SCREEN -->
+        <!-- GAME OVER -->
         <div id="screen-gameover" style="display:none;flex-direction:column;align-items:center;text-align:center;width:100%;">
-          <div class="overlay-title" style="font-size:28px;margin-bottom:2px;">MISSION FAILED</div>
+          <div class="overlay-title" style="font-size:26px;margin-bottom:2px;">MISSION FAILED</div>
           <div class="overlay-score-big" id="go-score">0</div>
           <div class="overlay-wave-info" id="go-info">Wave 1 · 0s</div>
           <div class="overlay-pb" id="go-pb"></div>
-
           <div id="save-panel">
             <div class="save-caption">
-              <span>Want to appear on the leaderboard?</span> Enter your name and LinkedIn below.<br>
-              <em style="font-size:10px;color:rgba(138,133,176,.6);">Optional — only your name, wave, and score will show publicly. Your LinkedIn is stored privately so I can connect with you!</em>
+              <span>Want on the global leaderboard?</span> Enter your name &amp; LinkedIn below.<br>
+              <em style="font-size:10px;color:rgba(138,133,176,.6);">Only your name, wave &amp; score are shown publicly. LinkedIn is stored privately — I use it to connect with you!</em>
             </div>
             <div class="save-fields">
-              <input class="save-input" id="save-name" placeholder="Your name (required for leaderboard)" maxlength="60" />
-              <input class="save-input" id="save-linkedin" placeholder="LinkedIn URL (optional — stored privately)" maxlength="120" />
+              <input class="save-input" id="save-name" placeholder="Your name (required)" maxlength="60"/>
+              <input class="save-input" id="save-linkedin" placeholder="LinkedIn URL (optional, stays private)" maxlength="120"/>
             </div>
             <div class="save-row">
               <button class="btn btn-outline btn-sm" id="btn-save">SAVE TO LEADERBOARD</button>
             </div>
             <div class="save-msg" id="save-msg"></div>
           </div>
-
-          <div style="display:flex;gap:12px;margin-top:14px;flex-wrap:wrap;justify-content:center;">
+          <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;justify-content:center;">
             <button class="btn btn-primary btn-sm" id="btn-restart">TRY AGAIN</button>
             <button class="btn btn-outline btn-sm" id="btn-see-lb">VIEW LEADERBOARD ↓</button>
           </div>
         </div>
 
-        <!-- WAVE TRANSITION SCREEN -->
+        <!-- WAVE TRANSITION -->
         <div id="screen-wave" style="display:none;flex-direction:column;align-items:center;text-align:center;">
-          <div class="overlay-title" id="sw-wave-title" style="font-size:52px;color:var(--violet);">WAVE 2</div>
+          <div class="overlay-title" id="sw-wave-title" style="font-size:48px;color:var(--violet);">WAVE 2</div>
           <div class="overlay-sub">INCOMING</div>
-          <div style="font-size:13px;color:var(--muted);margin-top:12px;" id="sw-tip"></div>
+          <div style="font-size:13px;color:var(--muted);margin-top:10px;" id="sw-tip"></div>
         </div>
       </div>
     </div>
 
-    <!-- PERSONAL BEST + LEADERBOARD -->
+    <!-- LEADERBOARD -->
     <div id="leaderboard-section" class="reveal" style="margin-top:40px;">
       <div id="pb-strip">
         <div class="pb-card"><div class="pb-label">Personal Best</div><div class="pb-val" id="pb-score-disp">0</div></div>
@@ -378,9 +469,10 @@ footer{padding:40px 0;border-top:1px solid var(--border);font-family:'Space Mono
       <p class="feedback-caption">Thank you for taking the time to look at my website. Please give me feedback if you wish, whether it is about the game or the website — I read every message and truly appreciate it.</p>
       <div class="feedback-form" id="feedback-form">
         <div class="fb-row">
-          <input class="fb-input" id="fb-name" placeholder="Your name (optional)" maxlength="80" />
-          <input class="fb-input" id="fb-email" placeholder="Email (optional)" maxlength="120" />
+          <input class="fb-input" id="fb-name" placeholder="Your name (optional)" maxlength="80"/>
+          <input class="fb-input" id="fb-email" placeholder="Email (optional)" maxlength="120"/>
         </div>
+        <input class="fb-input" id="fb-linkedin" placeholder="LinkedIn URL (optional)" maxlength="200" style="width:100%;"/>
         <div class="fb-subject">
           <select id="fb-subject">
             <option value="" disabled selected>What's this about?</option>
@@ -430,9 +522,15 @@ footer{padding:40px 0;border-top:1px solid var(--border);font-family:'Space Mono
 <div class="wrap"><footer><span>© 2026 Victoria Nguyen. Built with HTML, CSS &amp; Love.</span><span style="color:var(--pink);">Mechanical Engineering · UTSA · Physics</span></footer></div>
 
 <script>
-const supabaseUrl = 'https://your-project-id.supabase.co';
-const supabaseKey = 'your-anon-public-key';
-const supabase = supabasejs.createClient(supabaseUrl, supabaseKey);
+/* ============================================================
+   !! PASTE YOUR SUPABASE CREDENTIALS HERE !!
+   (follow the Supabase setup guide below)
+============================================================ */
+var SUPABASE_URL = 'https://xukyitflxvplodhsduja.supabase.co';
+var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1a3lpdGZseHZwbG9kaHNkdWphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwMTI3NDgsImV4cCI6MjA5MjU4ODc0OH0.NpD7v2gaK7t_HVhIaLTyVz_gPTbYY2eb2VuvWVPYD9M';
+
+// Initialize Supabase client using the correct global name from the CDN
+var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 /* ============================================================
    CURSOR
@@ -481,7 +579,16 @@ const supabase = supabasejs.createClient(supabaseUrl, supabaseKey);
 (function(){var els=document.querySelectorAll('.reveal'),obs=new IntersectionObserver(function(en){en.forEach(function(e){if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:.12});els.forEach(function(el){obs.observe(el);});})();
 
 /* ============================================================
-   PERSONAL BEST (local only — no login needed)
+   PORTFOLIO SUBFOLDER TOGGLE
+============================================================ */
+function toggleFolder(btn){
+  var sub=btn.nextElementSibling;
+  var open=sub.classList.toggle('open');
+  btn.textContent=open?'📂 Close Folder':'📂 '+btn.textContent.replace('📂 ','');
+}
+
+/* ============================================================
+   PERSONAL BEST (always local — no account needed)
 ============================================================ */
 var PB_KEY='vn_pb_v3';
 function loadPB(){try{return JSON.parse(localStorage.getItem(PB_KEY)||'{"score":0,"wave":0,"combo":0}');}catch(e){return{score:0,wave:0,combo:0};}}
@@ -495,13 +602,57 @@ function renderPB(){
 }
 renderPB();
 
+/* ============================================================
+   SUPABASE LEADERBOARD
+============================================================ */
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
+function fetchLeaderboard(){
+  var status=document.getElementById('lb-status');
+  var body=document.getElementById('lb-body');
+  if(SUPABASE_URL==='PASTE_YOUR_SUPABASE_URL_HERE'){
+    status.textContent='⚠ Supabase not configured yet';
+    body.innerHTML='<tr><td colspan="4" class="lb-empty">Follow the Supabase setup guide to enable the global leaderboard.</td></tr>';
+    return;
+  }
+  status.textContent='Loading...';
+  sb.from('leaderboard')
+    .select('player_name, score, wave')
+    .order('score',{ascending:false})
+    .limit(20)
+    .then(function(res){
+      if(res.error){status.textContent='Error: '+res.error.message;body.innerHTML='<tr><td colspan="4" class="lb-empty">Could not load scores.</td></tr>';return;}
+      var data=res.data;
+      if(!data||!data.length){body.innerHTML='<tr><td colspan="4" class="lb-empty">No scores yet — be the first!</td></tr>';status.textContent='0 players';return;}
+      body.innerHTML='';
+      data.forEach(function(entry,i){
+        var rankClass=i===0?'gold':i===1?'silver':i===2?'bronze':'';
+        var tr=document.createElement('tr');
+        tr.innerHTML='<td class="lb-rank '+rankClass+'">'+(i+1)+'</td>'
+          +'<td class="lb-name">'+escHtml(entry.player_name||'Anonymous')+'</td>'
+          +'<td class="lb-score">'+escHtml(String(entry.score))+'</td>'
+          +'<td class="lb-wave">'+(entry.wave?'Wave '+escHtml(String(entry.wave)):'—')+'</td>';
+        body.appendChild(tr);
+      });
+      status.textContent=data.length+' player'+(data.length===1?'':'s');
+    });
+}
+
+function postScore(name,linkedin,score,wave){
+  // linkedin is inserted into leaderboard but NOT selected in fetchLeaderboard — stays private
+  return sb.from('leaderboard').insert([{
+    player_name: name,
+    linkedin_url: linkedin,
+    score: score,
+    wave: wave
+  }]);
+}
 
 document.getElementById('btn-refresh-lb').addEventListener('click',fetchLeaderboard);
 fetchLeaderboard();
 
 /* ============================================================
-   FEEDBACK — Google Sheets via Apps Script
+   SUPABASE FEEDBACK
 ============================================================ */
 (function(){
   var btn=document.getElementById('btn-feedback');
@@ -509,27 +660,32 @@ fetchLeaderboard();
   var form=document.getElementById('feedback-form');
   var thanks=document.getElementById('fb-thanks');
 
-btn.addEventListener('click',function(){
-  var subject=document.getElementById('fb-subject').value;
-  var message=document.getElementById('fb-message').value.trim();
-  if(!subject){msgEl.textContent='Please select a topic.';msgEl.style.color='#ff85a1';return;}
-  if(message.length<3){msgEl.textContent='Please write a message.';msgEl.style.color='#ff85a1';return;}
-  var payload={
-    name:document.getElementById('fb-name').value.trim()||'Anonymous',
-    email:document.getElementById('fb-email').value.trim(),
-    subject:subject,
-    message:message,
-    ts:new Date().toISOString()
-  };
-  btn.textContent='SENDING...';btn.disabled=true;
-  fetch(FEEDBACK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
-    .then(function(){form.style.display='none';thanks.style.display='block';})
-    .catch(function(){msgEl.textContent='Could not send — please email me directly.';msgEl.style.color='#ff85a1';btn.textContent='SEND FEEDBACK';btn.disabled=false;});
-});
+  btn.addEventListener('click',function(){
+    var subject=document.getElementById('fb-subject').value;
+    var message=document.getElementById('fb-message').value.trim();
+    if(!subject){msgEl.textContent='Please select a topic.';msgEl.style.color='#ff85a1';return;}
+    if(message.length<3){msgEl.textContent='Please write a message.';msgEl.style.color='#ff85a1';return;}
+    btn.textContent='SENDING...';btn.disabled=true;
+
+    if(SUPABASE_URL==='PASTE_YOUR_SUPABASE_URL_HERE'){
+      form.style.display='none';thanks.style.display='block';return;
+    }
+
+    sb.from('feedback').insert([{
+      name: document.getElementById('fb-name').value.trim()||'Anonymous',
+      email: document.getElementById('fb-email').value.trim(),
+      linkedin_url: document.getElementById('fb-linkedin').value.trim(),
+      subject: subject,
+      message: message
+    }]).then(function(res){
+      if(res.error){msgEl.textContent='Could not send — please email me directly.';msgEl.style.color='#ff85a1';btn.textContent='SEND FEEDBACK';btn.disabled=false;}
+      else{form.style.display='none';thanks.style.display='block';}
+    });
+  });
 })();
 
 /* ============================================================
-   GAME: ORBITAL DRIFT
+   GAME: ORBITAL DRIFT — with mobile joystick
 ============================================================ */
 (function(){
   var canvas=document.getElementById('gameCanvas');
@@ -555,6 +711,48 @@ btn.addEventListener('click',function(){
   var goInfo=document.getElementById('go-info');
   var goPB=document.getElementById('go-pb');
 
+  /* Joystick elements */
+  var joystickZone=document.getElementById('joystick-zone');
+  var joystickKnob=document.getElementById('joystick-knob');
+  var joystickActive=false;
+  var joystickAx=0,joystickAy=0; // normalized -1..1
+  var joystickStartId=null;
+  var JR=45; // radius of base (half of 90px)
+  var KR=18; // knob half-width
+
+  function joystickReset(){joystickAx=0;joystickAy=0;joystickKnob.style.left='27px';joystickKnob.style.top='27px';joystickKnob.classList.remove('active');}
+
+  joystickZone.addEventListener('touchstart',function(e){
+    var t=e.changedTouches[0];
+    joystickStartId=t.identifier;
+    joystickActive=true;
+    joystickKnob.classList.add('active');
+    e.stopPropagation();e.preventDefault();
+  },{passive:false});
+
+  joystickZone.addEventListener('touchmove',function(e){
+    for(var i=0;i<e.changedTouches.length;i++){
+      var t=e.changedTouches[i];
+      if(t.identifier===joystickStartId){
+        var rect=joystickZone.getBoundingClientRect();
+        var cx=rect.left+JR,cy=rect.top+JR;
+        var dx=t.clientX-cx,dy=t.clientY-cy;
+        var dist=Math.hypot(dx,dy);
+        var maxD=JR-KR;
+        if(dist>maxD){dx=dx/dist*maxD;dy=dy/dist*maxD;dist=maxD;}
+        joystickAx=dx/maxD;joystickAy=dy/maxD;
+        joystickKnob.style.left=(JR-KR+dx)+'px';
+        joystickKnob.style.top=(JR-KR+dy)+'px';
+      }
+    }
+    e.stopPropagation();e.preventDefault();
+  },{passive:false});
+
+  joystickZone.addEventListener('touchend',function(e){
+    joystickReset();joystickActive=false;joystickStartId=null;
+    e.stopPropagation();
+  });
+
   var GW=700,GH=380;
   var gameState='idle';
   var ship,asteroids,orbs,powerups,stars,dustParts,vfx;
@@ -563,7 +761,7 @@ btn.addEventListener('click',function(){
   var combo,comboTimer,bestCombo;
   var shieldTimer,slowTimer;
   var shakeFrames,shakeAmt;
-  var keys={},touchTarget=null;
+  var keys={};
   var scoreScale=1;
 
   function rnd(a,b){return a+Math.random()*(b-a);}
@@ -599,7 +797,6 @@ btn.addEventListener('click',function(){
   }
   function spawnOrb(){orbs.push({x:rnd(35,GW-35),y:rnd(35,GH-35),r:7,pulse:Math.random()*Math.PI*2,life:320});}
   function spawnPowerup(){powerups.push({x:rnd(40,GW-40),y:rnd(40,GH-40),r:10,pulse:Math.random()*Math.PI*2,life:380,type:Math.random()>.5?'shield':'slow'});}
-
   function burst(x,y,color,count){for(var i=0;i<count;i++){var a=Math.random()*Math.PI*2,spd=rnd(1,4.5);vfx.push({x:x,y:y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,r:rnd(1.5,3.5),color:color,life:rnd(18,38),maxLife:38});}}
   function floatText(x,y,text,color){vfx.push({type:'text',x:x,y:y,vy:-1.2,text:text,color:color||'#ff85a1',life:40,maxLife:40});}
   function shake(f,a){shakeFrames=Math.max(shakeFrames,f);shakeAmt=Math.max(shakeAmt,a);}
@@ -611,7 +808,6 @@ btn.addEventListener('click',function(){
     hudShield.style.opacity=shieldTimer>0?1:0;
     if(combo>0){comboTimer--;if(comboTimer<=0){combo=0;hudCombo.classList.remove('show');}}
     waveTimer++;if(waveTimer>=1800&&!waveTransitioning)startWaveTransition();
-
     spawnTimer++;
     if(spawnTimer>=spawnInterval){
       var extra=Math.floor((wave-1)*.4);
@@ -621,12 +817,15 @@ btn.addEventListener('click',function(){
     orbTimer++;if(orbTimer>=100){spawnOrb();orbTimer=0;}
     powerupTimer++;if(powerupTimer>=420){spawnPowerup();powerupTimer=0;}
 
+    /* Input: keyboard + joystick combined */
     var ax=0,ay=0;
     if(keys['ArrowLeft']||keys['a']||keys['A'])ax-=1;
     if(keys['ArrowRight']||keys['d']||keys['D'])ax+=1;
     if(keys['ArrowUp']||keys['w']||keys['W'])ay-=1;
     if(keys['ArrowDown']||keys['s']||keys['S'])ay+=1;
-    if(touchTarget){var tdx=touchTarget.x-ship.x,tdy=touchTarget.y-ship.y,tm=Math.hypot(tdx,tdy);if(tm>8){ax=tdx/tm;ay=tdy/tm;}}
+    // Add joystick input (overrides direction if active)
+    if(joystickActive&&(Math.abs(joystickAx)>0.05||Math.abs(joystickAy)>0.05)){ax=joystickAx;ay=joystickAy;}
+
     var mag=Math.hypot(ax,ay);if(mag>0){ax/=mag;ay/=mag;}
     ship.vx=(ship.vx+ax*.32)*.91;ship.vy=(ship.vy+ay*.32)*.91;
     if(ax!==0||ay!==0)ship.angle=Math.atan2(ay,ax);
@@ -689,7 +888,6 @@ btn.addEventListener('click',function(){
 
   function drawStars(){stars.forEach(function(s){ctx.globalAlpha=s.b;ctx.fillStyle='rgba(200,190,255,1)';ctx.beginPath();ctx.arc(s.x,s.y,s.r*(1+scoreScale*.3),0,Math.PI*2);ctx.fill();});ctx.globalAlpha=1;}
   function drawDust(){dustParts.forEach(function(p){ctx.globalAlpha=p.a;ctx.fillStyle='#a29bfe';ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();});ctx.globalAlpha=1;}
-
   function drawAsteroid(a){
     ctx.save();ctx.translate(a.x,a.y);ctx.rotate(a.rot);
     ctx.beginPath();a.pts.forEach(function(pt,i){var px=Math.cos(pt.a)*pt.d,py=Math.sin(pt.a)*pt.d;i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);});
@@ -727,7 +925,6 @@ btn.addEventListener('click',function(){
       else{ctx.globalAlpha=v.life/v.maxLife;ctx.fillStyle=v.color;ctx.beginPath();ctx.arc(v.x,v.y,Math.max(.5,v.r),0,Math.PI*2);ctx.fill();}
     });ctx.globalAlpha=1;
   }
-
   function render(){
     var sx=0,sy=0;if(shakeFrames>0){sx=(Math.random()-.5)*shakeAmt;sy=(Math.random()-.5)*shakeAmt;}
     ctx.save();ctx.translate(sx,sy);
@@ -740,12 +937,11 @@ btn.addEventListener('click',function(){
   function loop(){if(gameState==='playing')update();render();requestAnimationFrame(loop);}
 
   function endGame(){
-    gameState='dead';
+    gameState='dead';joystickReset();joystickActive=false;
     overlay.classList.remove('hidden');screenStart.style.display='none';screenWave.style.display='none';
     screenGO.style.display='flex';screenGO.style.flexDirection='column';screenGO.style.alignItems='center';
-    hud.style.display='none';
-    goScore.textContent=score;
-    goInfo.textContent='Wave '+wave+' · Survived '+Math.floor(frame/60)+'s';
+    hud.style.display='none';joystickZone.style.display='none';
+    goScore.textContent=score;goInfo.textContent='Wave '+wave+' · Survived '+Math.floor(frame/60)+'s';
     var pb=loadPB(),newPB=false;
     if(score>pb.score){pb.score=score;newPB=true;}if(wave>pb.wave)pb.wave=wave;if(bestCombo>pb.combo)pb.combo=bestCombo;
     savePB(pb);renderPB();
@@ -754,15 +950,16 @@ btn.addEventListener('click',function(){
     btnSave.disabled=false;btnSave.textContent='SAVE TO LEADERBOARD';
     fetchLeaderboard();
   }
-
   function showStart(){
     screenStart.style.display='flex';screenStart.style.flexDirection='column';screenStart.style.alignItems='center';
     screenGO.style.display='none';screenWave.style.display='none';
-    overlay.classList.remove('hidden');hud.style.display='none';
+    overlay.classList.remove('hidden');hud.style.display='none';joystickZone.style.display='none';
   }
   function startGame(){
     initGame();gameState='playing';
     overlay.classList.add('hidden');hud.style.display='block';
+    // Show joystick on touch devices
+    if(window.matchMedia('(pointer:coarse)').matches)joystickZone.style.display='block';
     hudScore.textContent='Score: 0';hudLives.textContent=livesStr(3);hudWave.textContent='WAVE 1';
     hudCombo.classList.remove('show');hudShield.style.opacity=0;
   }
@@ -775,31 +972,15 @@ btn.addEventListener('click',function(){
     var name=saveNameEl.value.trim();
     if(!name){saveMsgEl.textContent='Please enter your name to save.';saveMsgEl.style.color='#ff85a1';return;}
     var linkedin=saveLinkedinEl.value.trim();
-    btnSave.textContent='SAVING...';
-    btnSave.disabled=true;
-    postScore(name,linkedin,score,wave)
-      .then(function() {
-        saveMsgEl.textContent = 'Saved! You\'re on the leaderboard.';
-        saveMsgEl.style.color = '#55efc4';
-        btnSave.textContent = 'SAVED ✓';
-        fetchLeaderboard(); // This refreshes the list immediately
-      })
-      .catch(function(err) {
-        console.error(err);
-        saveMsgEl.textContent = 'Error saving score.';
-        saveMsgEl.style.color = '#ff85a1';
-        btnSave.disabled = false;
-        btnSave.textContent = 'SAVE TO LEADERBOARD';
-      });
-});
+    btnSave.textContent='SAVING...';btnSave.disabled=true;
+    postScore(name,linkedin,score,wave).then(function(res){
+      if(res.error){saveMsgEl.textContent='Error: '+res.error.message;saveMsgEl.style.color='#ff85a1';btnSave.disabled=false;btnSave.textContent='SAVE TO LEADERBOARD';}
+      else{saveMsgEl.textContent='Saved! You\'re on the leaderboard.';saveMsgEl.style.color='#55efc4';btnSave.textContent='SAVED ✓';fetchLeaderboard();}
+    });
+  });
 
   document.addEventListener('keydown',function(e){keys[e.key]=true;if(gameState==='playing'&&['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].indexOf(e.key)!==-1)e.preventDefault();});
   document.addEventListener('keyup',function(e){keys[e.key]=false;});
-
-  function getTouchPos(t){var r=canvas.getBoundingClientRect();return{x:(t.clientX-r.left)*(GW/r.width),y:(t.clientY-r.top)*(GH/r.height)};}
-  canvas.addEventListener('touchstart',function(e){if(gameState==='playing'){touchTarget=getTouchPos(e.touches[0]);e.preventDefault();}},{passive:false});
-  canvas.addEventListener('touchmove',function(e){if(gameState==='playing'){touchTarget=getTouchPos(e.touches[0]);e.preventDefault();}},{passive:false});
-  canvas.addEventListener('touchend',function(){touchTarget=null;});
 
   initGame();showStart();loop();
 })();
