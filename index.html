@@ -977,6 +977,53 @@ fetchLeaderboard();
       if(res.error){saveMsgEl.textContent='Error: '+res.error.message;saveMsgEl.style.color='#ff85a1';btnSave.disabled=false;btnSave.textContent='SAVE TO LEADERBOARD';}
       else{saveMsgEl.textContent='Saved! You\'re on the leaderboard.';saveMsgEl.style.color='#55efc4';btnSave.textContent='SAVED ✓';fetchLeaderboard();}
     });
+  /* --- FEEDBACK SYSTEM --- */
+  
+  // 1. Find the button in your HTML
+  const btnFeedback = document.getElementById('btn-feedback');
+  
+  if (btnFeedback) {
+    btnFeedback.addEventListener('click', async function() {
+      const msgEl = document.getElementById('fb-msg');
+      const name = document.getElementById('fb-name').value.trim();
+      const email = document.getElementById('fb-email').value.trim();
+      const linkedin = document.getElementById('fb-linkedin').value.trim();
+      const subject = document.getElementById('fb-subject').value;
+      const message = document.getElementById('fb-message').value.trim();
+
+      if (!message) {
+        msgEl.textContent = 'Please enter a message.';
+        msgEl.style.color = '#ff85a1';
+        return;
+      }
+
+      btnFeedback.textContent = 'SENDING...';
+      btnFeedback.disabled = true;
+
+      // 2. Send to Supabase
+      const { error } = await supabase
+        .from('feedback')
+        .insert([{ 
+          name: name || 'Anonymous', 
+          email: email, 
+          linkedin: linkedin, 
+          subject: subject, 
+          message: message 
+        }]);
+
+      if (error) {
+        console.error(error);
+        msgEl.textContent = 'Error sending feedback.';
+        msgEl.style.color = '#ff85a1';
+        btnFeedback.disabled = false;
+        btnFeedback.textContent = 'SEND FEEDBACK';
+      } else {
+        // 3. Hide form and show thanks
+        document.getElementById('feedback-form').style.display = 'none';
+        document.getElementById('fb-thanks').style.display = 'block';
+      }
+    });
+  }
   });
 
   document.addEventListener('keydown',function(e){keys[e.key]=true;if(gameState==='playing'&&['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].indexOf(e.key)!==-1)e.preventDefault();});
