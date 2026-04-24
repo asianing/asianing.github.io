@@ -566,28 +566,23 @@ fetchLeaderboard();
   var form=document.getElementById('feedback-form');
   var thanks=document.getElementById('fb-thanks');
 
-  btn.addEventListener('click',function(){
-    var subject=document.getElementById('fb-subject').value;
-    var message=document.getElementById('fb-message').value.trim();
-    if(!subject){msgEl.textContent='Please select a topic.';msgEl.style.color='#ff85a1';return;}
-    if(message.length<3){msgEl.textContent='Please write a message.';msgEl.style.color='#ff85a1';return;}
-    var payload={
-      name:document.getElementById('fb-name').value.trim()||'Anonymous',
-      email:document.getElementById('fb-email').value.trim(),
-      subject:subject,
-      message:message,
-      ts:new Date().toISOString()
-    };
-    btn.textContent='SENDING...';btn.disabled=true;
-    if(FEEDBACK_URL==='PASTE_YOUR_FEEDBACK_SCRIPT_URL_HERE'){
-      // No script yet — just show thanks locally
-      form.style.display='none';thanks.style.display='block';return;
-    }
-    fetch(FEEDBACK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
-      .then(function(){form.style.display='none';thanks.style.display='block';})
-      .catch(function(){msgEl.textContent='Could not send — please email me directly.';msgEl.style.color='#ff85a1';btn.textContent='SEND FEEDBACK';btn.disabled=false;});
-  });
-})();
+btn.addEventListener('click',function(){
+  var subject=document.getElementById('fb-subject').value;
+  var message=document.getElementById('fb-message').value.trim();
+  if(!subject){msgEl.textContent='Please select a topic.';msgEl.style.color='#ff85a1';return;}
+  if(message.length<3){msgEl.textContent='Please write a message.';msgEl.style.color='#ff85a1';return;}
+  var payload={
+    name:document.getElementById('fb-name').value.trim()||'Anonymous',
+    email:document.getElementById('fb-email').value.trim(),
+    subject:subject,
+    message:message,
+    ts:new Date().toISOString()
+  };
+  btn.textContent='SENDING...';btn.disabled=true;
+  fetch(FEEDBACK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    .then(function(){form.style.display='none';thanks.style.display='block';})
+    .catch(function(){msgEl.textContent='Could not send — please email me directly.';msgEl.style.color='#ff85a1';btn.textContent='SEND FEEDBACK';btn.disabled=false;});
+});
 
 /* ============================================================
    GAME: ORBITAL DRIFT
