@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Victoria Nguyen | Engineering & Game Dev Portfolio</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head> ```
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -428,12 +430,10 @@ footer{padding:40px 0;border-top:1px solid var(--border);font-family:'Space Mono
 <div class="wrap"><footer><span>© 2026 Victoria Nguyen. Built with HTML, CSS &amp; Love.</span><span style="color:var(--pink);">Mechanical Engineering · UTSA · Physics</span></footer></div>
 
 <script>
-/* ============================================================
-   !! PASTE YOUR GOOGLE APPS SCRIPT URLs HERE !!
-   (Follow the setup guide in the README — takes ~10 minutes)
-============================================================ */
-var LEADERBOARD_URL = 'https://formspree.io/f/xojyyzpj';
-var FEEDBACK_URL    = 'https://formspree.io/f/xnjllygl';
+const supabaseUrl = 'https://your-project-id.supabase.co';
+const supabaseKey = 'your-anon-public-key';
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
 /* ============================================================
    CURSOR
 ============================================================ */
@@ -495,64 +495,7 @@ function renderPB(){
 }
 renderPB();
 
-/* ============================================================
-   GLOBAL LEADERBOARD — Google Sheets via Apps Script
-============================================================ */
-function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-function fetchLeaderboard(){
-  var status=document.getElementById('lb-status');
-  var body=document.getElementById('lb-body');
-  if(LEADERBOARD_URL==='PASTE_YOUR_LEADERBOARD_SCRIPT_URL_HERE'){
-    status.textContent='⚠ Script URL not set yet — see setup guide';
-    body.innerHTML='<tr><td colspan="4" class="lb-empty">Follow the Google Sheets setup guide to enable the global leaderboard.</td></tr>';
-    return;
-  }
-  status.textContent='Loading...';
-  fetch(LEADERBOARD_URL+'?action=get')
-    .then(function(r){return r.json();})
-    .then(function(data){
-      if(!data||!data.length){
-        body.innerHTML='<tr><td colspan="4" class="lb-empty">No scores yet — be the first on the board!</td></tr>';
-        status.textContent='0 players';
-        return;
-      }
-      data.sort(function(a,b){return b.score-a.score;});
-      body.innerHTML='';
-      data.slice(0,20).forEach(function(entry,i){
-        var rankClass=i===0?'gold':i===1?'silver':i===2?'bronze':'';
-        var nameClass=entry.name?'lb-name':'lb-name anon';
-        var tr=document.createElement('tr');
-        tr.innerHTML='<td class="lb-rank '+rankClass+'">'+(i+1)+'</td>'
-          +'<td class="'+nameClass+'">'+escHtml(entry.name||'Anonymous')+'</td>'
-          +'<td class="lb-score">'+escHtml(entry.score)+'</td>'
-          +'<td class="lb-wave">'+(entry.wave?'Wave '+escHtml(entry.wave):'—')+'</td>';
-        body.appendChild(tr);
-      });
-      status.textContent=data.length+' player'+(data.length===1?'':'s');
-    })
-    .catch(function(){
-      status.textContent='Could not load — check your script URL';
-      body.innerHTML='<tr><td colspan="4" class="lb-empty">Unable to reach leaderboard. Try refreshing.</td></tr>';
-    });
-}
-
-function postScore(name, linkedin, score, wave) {
-  return fetch(LEADERBOARD_URL, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({
-      name: name,
-      linkedin: linkedin,
-      score: score,
-      wave: wave,
-      ts: new Date().toISOString()
-    })
-  }).then(function(r) {
-    if (r.ok) return {success: true};
-    throw new Error('Failed to save');
-  });
-}
 
 document.getElementById('btn-refresh-lb').addEventListener('click',fetchLeaderboard);
 fetchLeaderboard();
@@ -832,18 +775,23 @@ btn.addEventListener('click',function(){
     var name=saveNameEl.value.trim();
     if(!name){saveMsgEl.textContent='Please enter your name to save.';saveMsgEl.style.color='#ff85a1';return;}
     var linkedin=saveLinkedinEl.value.trim();
-    btnSave.textContent='SAVING...';btnSave.disabled=true;
+    btnSave.textContent='SAVING...';
+    btnSave.disabled=true;
     postScore(name,linkedin,score,wave)
-      .then(function(){
-        saveMsgEl.textContent='Saved! You\'re on the leaderboard.';saveMsgEl.style.color='#55efc4';
-        btnSave.textContent='SAVED ✓';
-        fetchLeaderboard();
+      .then(function() {
+        saveMsgEl.textContent = 'Saved! You\'re on the leaderboard.';
+        saveMsgEl.style.color = '#55efc4';
+        btnSave.textContent = 'SAVED ✓';
+        fetchLeaderboard(); // This refreshes the list immediately
       })
-      .catch(function(){
-        saveMsgEl.textContent='Could not reach server — try again.';saveMsgEl.style.color='#ff85a1';
-        btnSave.disabled=false;btnSave.textContent='SAVE TO LEADERBOARD';
+      .catch(function(err) {
+        console.error(err);
+        saveMsgEl.textContent = 'Error saving score.';
+        saveMsgEl.style.color = '#ff85a1';
+        btnSave.disabled = false;
+        btnSave.textContent = 'SAVE TO LEADERBOARD';
       });
-  });
+});
 
   document.addEventListener('keydown',function(e){keys[e.key]=true;if(gameState==='playing'&&['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].indexOf(e.key)!==-1)e.preventDefault();});
   document.addEventListener('keyup',function(e){keys[e.key]=false;});
