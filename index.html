@@ -610,7 +610,7 @@ function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').
 function fetchLeaderboard(){
   var status=document.getElementById('lb-status');
   var body=document.getElementById('lb-body');
-  if(SUPABASE_URL==='PASTE_YOUR_SUPABASE_URL_HERE'){
+  if(SUPABASE_URL==='https://xukyitflxvplodhsduja.supabase.co'){
     status.textContent='⚠ Supabase not configured yet';
     body.innerHTML='<tr><td colspan="4" class="lb-empty">Follow the Supabase setup guide to enable the global leaderboard.</td></tr>';
     return;
@@ -667,7 +667,7 @@ fetchLeaderboard();
     if(message.length<3){msgEl.textContent='Please write a message.';msgEl.style.color='#ff85a1';return;}
     btn.textContent='SENDING...';btn.disabled=true;
 
-    if(SUPABASE_URL==='PASTE_YOUR_SUPABASE_URL_HERE'){
+    if(SUPABASE_URL==='https://xukyitflxvplodhsduja.supabase.co'){
       form.style.display='none';thanks.style.display='block';return;
     }
 
