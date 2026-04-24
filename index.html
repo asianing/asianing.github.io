@@ -1016,9 +1016,7 @@ fetchLeaderboard();
       btnFeedback.textContent = 'SENDING...';
       btnFeedback.disabled = true;
 
-      const { error } = await supabase
-        .from('feedback')
-        .insert([{
+      const { error } = await sb.from('feedback').insert([{
           name: name || 'Anonymous',
           email: email,
           linkedin: linkedin,
