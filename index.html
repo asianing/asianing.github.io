@@ -610,7 +610,7 @@ function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').
 function fetchLeaderboard(){
   var status=document.getElementById('lb-status');
   var body=document.getElementById('lb-body');
-  if(SUPABASE_URL === 'https://xukyitflxvplodhsduja.supabase.co'){
+  if(SUPABASE_URL === 'PASTE_YOUR_SUPABASE_URL_HERE'){
     status.textContent='⚠ Supabase not configured yet';
     body.innerHTML='<tr><td colspan="4" class="lb-empty">Follow the Supabase setup guide to enable the global leaderboard.</td></tr>';
     return;
