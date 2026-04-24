@@ -6,8 +6,6 @@
 <title>Victoria Nguyen | Engineering & Game Dev Portfolio</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
   
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
   
 <style>
 :root {
@@ -457,53 +455,7 @@ footer{padding:40px 0;border-top:1px solid var(--border);font-family:'Space Mono
 <div class="wrap"><footer><span>© 2026 Victoria Nguyen. Built with HTML, CSS &amp; Love.</span><span style="color:var(--pink);">Mechanical Engineering · UTSA · Physics</span></footer></div>
 
 <script>
-/* ============================================================
-   FIREBASE SETUP - Wait for Firebase to load
-============================================================ */
 
-setTimeout(function() {
-  const firebaseConfig = {
-    apiKey: "AIzaSyBGIrMX802zLg24tXvNBK2imRB076G431U",
-    authDomain: "victoria-s-website-d3131.firebaseapp.com",
-    databaseURL: "https://victoria-s-website-d3131-default-rtdb.firebaseio.com",
-    projectId: "victoria-s-website-d3131",
-    storageBucket: "victoria-s-website-d3131.firebasestorage.app",
-    messagingSenderId: "9671847593",
-    appId: "1:9671847593:web:519bbe50a9160a407603b8"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-  
-  console.log("Firebase initialized!", db);
-
-  // Helper: Save feedback to Firebase
-  window.saveFeedbackToFirebase = function(feedback) {
-    db.ref('feedback').push(feedback).catch(err => {
-      console.error('Error saving feedback:', err);
-    });
-  };
-
-  // Helper: Load leaderboard from Firebase
-  window.loadLBFromFirebase = function() {
-    return new Promise((resolve) => {
-      db.ref('leaderboard').once('value').then(snapshot => {
-        resolve(snapshot.val() || []);
-      }).catch(err => {
-        console.error('Error loading leaderboard:', err);
-        resolve([]);
-      });
-    });
-  };
-
-  // Helper: Save leaderboard to Firebase
-  window.saveLBToFirebase = function(lb) {
-    db.ref('leaderboard').set(lb).catch(err => {
-      console.error('Error saving leaderboard:', err);
-    });
-  };
-}, 500);
-    
 /* ============================================================
    CURSOR
 ============================================================ */
