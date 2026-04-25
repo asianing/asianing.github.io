@@ -175,9 +175,55 @@ footer{padding:40px 0;border-top:1px solid var(--border);font-family:'Space Mono
   .hero-btns{flex-direction:column;}
   .subfolder-grid{grid-template-columns:1fr;}
 }
+
+/* ===== LIGHTBOX ===== */
+#lightbox{position:fixed;inset:0;z-index:10000;background:rgba(5,4,16,.96);display:none;align-items:center;justify-content:center;flex-direction:column;padding:20px;}
+#lightbox.open{display:flex;}
+#lightbox-close{position:absolute;top:20px;right:24px;background:none;border:none;color:var(--muted);font-size:28px;cursor:pointer;line-height:1;transition:color .2s;font-family:'Space Mono',monospace;}
+#lightbox-close:hover{color:var(--pink);}
+#lightbox-prev,#lightbox-next{position:absolute;top:50%;transform:translateY(-50%);background:rgba(22,20,42,.8);border:1px solid var(--border);color:var(--text);font-size:20px;width:44px;height:44px;cursor:pointer;transition:border-color .2s,color .2s;font-family:'Space Mono',monospace;display:flex;align-items:center;justify-content:center;}
+#lightbox-prev{left:16px;}
+#lightbox-next{right:16px;}
+#lightbox-prev:hover,#lightbox-next:hover{border-color:var(--pink);color:var(--pink);}
+#lightbox-prev.hidden,#lightbox-next.hidden{opacity:0;pointer-events:none;}
+#lightbox-img{max-width:90vw;max-height:78vh;object-fit:contain;display:block;border:1px solid var(--border);}
+#lightbox-pdf{width:90vw;height:80vh;border:1px solid var(--border);display:none;}
+#lightbox-caption{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:2px;margin-top:14px;text-align:center;}
+#lightbox-counter{font-family:'Space Mono',monospace;font-size:10px;color:rgba(138,133,176,.5);margin-top:4px;}
+/* Make card cover image clickable */
+.card-img.clickable{cursor:pointer;}
+.card-img.clickable::after{content:'🔍';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:28px;opacity:0;transition:opacity .25s;pointer-events:none;}
+.card-img.clickable:hover::after{opacity:1;}
+/* Subfolder item — no more <a> tags, uses lightbox */
+.subfolder-item{cursor:pointer;}
+.subfolder-item img{pointer-events:none;}
+/* PDF subfolder item */
+.subfolder-item.is-pdf .subfolder-icon{font-size:32px;height:60px;display:flex;align-items:center;justify-content:center;}
+
+/* ===== HONORABLE MENTIONS ===== */
+#honors{background:var(--bg2);}
+.honors-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;}
+.honor-card{background:var(--card-bg);border:1px solid var(--border);padding:28px;transition:border-color .3s,transform .3s;position:relative;overflow:hidden;}
+.honor-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--gold);}
+.honor-card:hover{border-color:var(--gold);transform:translateY(-4px);}
+.honor-badge{font-size:36px;margin-bottom:16px;display:block;}
+.honor-org{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:6px;}
+.honor-title{font-size:17px;font-weight:700;margin-bottom:10px;color:var(--text);}
+.honor-desc{font-size:13px;color:var(--muted);line-height:1.7;}
+.honor-year{font-family:'Space Mono',monospace;font-size:10px;color:rgba(138,133,176,.5);margin-top:12px;letter-spacing:1px;}
 </style>
 </head>
 <body>
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <button id="lightbox-close">✕</button>
+  <button id="lightbox-prev">‹</button>
+  <img id="lightbox-img" src="" alt=""/>
+  <iframe id="lightbox-pdf" src="" title="PDF viewer"></iframe>
+  <div id="lightbox-caption"></div>
+  <div id="lightbox-counter"></div>
+  <button id="lightbox-next">›</button>
+</div>
 <div id="cursor"></div>
 <div id="cursor-ring"></div>
 <canvas id="particle-canvas"></canvas>
@@ -189,6 +235,7 @@ footer{padding:40px 0;border-top:1px solid var(--border);font-family:'Space Mono
     <ul class="nav-links">
       <li><a href="#about">About</a></li>
       <li><a href="#portfolio">Work</a></li>
+      <li><a href="#honors">Highlights</a></li>
       <li><a href="#game">Play</a></li>
       <li><a href="#feedback">Feedback</a></li>
       <li><a href="#contact">Contact</a></li>
@@ -247,45 +294,43 @@ footer{padding:40px 0;border-top:1px solid var(--border);font-family:'Space Mono
     <h2 class="section-title reveal">Portfolio</h2>
     <div class="portfolio-grid">
 
-      <!-- CARD 1: Anonymous Lighters — with expandable subfolder -->
+      <!-- CARD 1: Anonymous Lighters — cover + subfolder open in lightbox -->
 <div class="portfolio-card reveal">
-  <div class="card-img">
+  <div class="card-img clickable" onclick="lbOpenSet(this,'cover')">
     <img src="images/anonymous%20lighters/maincover.png" alt="Anonymous Lighters Cover">
-    <div class="card-img-label">3D Design & Art</div>
+    <div class="card-img-label">3D Design & Art · Click to view</div>
   </div>
-
   <div class="card-body">
-    <div class="card-type">Founder & Developer of </div>
+    <div class="card-type">Founder & Developer of</div>
     <div class="card-title">Anonymous Lighters</div>
     <div class="card-desc">A small business that I made in March 2026. I use 3D modeling, clay sculpting, art design, and resin to create custom lighter cases while communicating with my customer.</div>
-    
     <button class="card-folder-btn" onclick="toggleFolder(this)">📂 Screenshots / Files</button>
-    
     <div class="card-subfolder">
-      <div class="subfolder-grid"> 
-
-        <div class="subfolder-item">
-          <a href="images/anonymous%20lighters/smiski1.png" target="_blank">
-            <img src="images/anonymous%20lighters/smiski1.png" alt="Smiski Lighter">
-          </a>
+      <div class="subfolder-grid">
+        <div class="subfolder-item" onclick="lbOpenSet(this.closest('.card-subfolder'),'0')">
+          <img src="images/anonymous%20lighters/smiski1.png" alt="Smiski Lighter" data-lb-src="images/anonymous%20lighters/smiski1.png" data-lb-caption="Smiski Lighter — Final Product">
           Final Product
         </div>
-
-        <div class="subfolder-item">
-          <a href="images/anonymous%20lighters/snake1.png" target="_blank">
-            <img src="images/anonymous%20lighters/snake1.png" alt="Snake Lighter">
-          </a>
+        <div class="subfolder-item" onclick="lbOpenSet(this.closest('.card-subfolder'),'1')">
+          <img src="images/anonymous%20lighters/snake1.png" alt="Snake Lighter" data-lb-src="images/anonymous%20lighters/snake1.png" data-lb-caption="Snake Lighter — Final Product">
           Final Product
         </div>
-
-        <div class="subfolder-item">
-          <a href="images/anonymous%20lighters/snorlax1.png" target="_blank">
-            <img src="images/anonymous%20lighters/snorlax1.png" alt="Snorlax Lighter">
-          </a>
+        <div class="subfolder-item" onclick="lbOpenSet(this.closest('.card-subfolder'),'2')">
+          <img src="images/anonymous%20lighters/snorlax1.png" alt="Snorlax Lighter" data-lb-src="images/anonymous%20lighters/snorlax1.png" data-lb-caption="Snorlax Lighter — Finished Product">
           Finished Product
         </div>
-
-      </div> </div> </div> </div> ```
+        <!-- TO ADD MORE: copy a subfolder-item div above, change src/alt/data-lb-src/data-lb-caption -->
+        <!-- TO ADD A PDF: use class="subfolder-item is-pdf" and data-lb-pdf="path/to/file.pdf" data-lb-caption="My PDF" -->
+        <!-- Example PDF item:
+        <div class="subfolder-item is-pdf" onclick="lbOpenSet(this.closest('.card-subfolder'),'3')">
+          <div class="subfolder-icon">📄</div>
+          <span data-lb-pdf="files/project.pdf" data-lb-caption="Project Spec Sheet">Spec Sheet</span>
+        </div>
+        -->
+      </div>
+    </div>
+  </div>
+</div>
   
       <!-- CARD 2: Owala Accessories -->
       <div class="portfolio-card reveal">
@@ -357,6 +402,53 @@ footer{padding:40px 0;border-top:1px solid var(--border);font-family:'Space Mono
     </div>
     <div class="upload-callout reveal">
       <p><strong style="color:var(--text);">📁 How to add images:</strong> Create an <code>images/</code> folder in your GitHub repo. For subfolder items, create <code>images/ecogenz/</code>, <code>images/owala/</code> etc. Use <code>&lt;img src="images/folder/file.jpg"&gt;</code> inside the subfolder grid items.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HONORABLE MENTIONS -->
+<section id="honors">
+  <div class="wrap">
+    <div class="section-label">Achievements & Recognition</div>
+    <h2 class="section-title reveal">Cool Things I've Done</h2>
+    <div class="honors-grid">
+
+      <!-- NASA L'SPACE -->
+      <div class="honor-card reveal">
+        <span class="honor-badge">🚀</span>
+        <div class="honor-org">NASA · L'Space Academy</div>
+        <div class="honor-title">Mission Concept Academy</div>
+        <div class="honor-desc">Selected to participate in NASA's L'Space Mission Concept Academy — a rigorous program where student teams design a full mission concept through the NASA mission lifecycle, working alongside aerospace professionals.</div>
+        <div class="honor-year">Summer 2026</div>
+      </div>
+
+      <!-- PLACEHOLDER 2 — duplicate and fill in your own -->
+      <div class="honor-card reveal">
+        <span class="honor-badge">⭐</span>
+        <div class="honor-org">[Organization / Program]</div>
+        <div class="honor-title">[Achievement Title]</div>
+        <div class="honor-desc">[Describe the achievement]</div>
+        <div class="honor-year">[Year]</div>
+      </div>
+
+      <!-- PLACEHOLDER 3 -->
+      <div class="honor-card reveal">
+        <span class="honor-badge">🏆</span>
+        <div class="honor-org">[COMING SOON]</div>
+        <div class="honor-title">[Achievement Title]</div>
+        <div class="honor-desc">[Describe the achievement here]</div>
+        <div class="honor-year">[Year]</div>
+      </div>
+
+      <!-- PLACEHOLDER 4 -->
+      <div class="honor-card reveal">
+        <span class="honor-badge">✨</span>
+        <div class="honor-org">[COMING SOON]</div>
+        <div class="honor-title">[Achievement Title]</div>
+        <div class="honor-desc">]Describe the achievement here]</div>
+        <div class="honor-year">[Year]</div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -677,7 +769,7 @@ fetchLeaderboard();
     if(message.length<3){msgEl.textContent='Please write a message.';msgEl.style.color='#ff85a1';return;}
     btn.textContent='SENDING...';btn.disabled=true;
 
-    if(SUPABASE_URL==='https://xukyitflxvplodhsduja.supabase.co'){
+    if(SUPABASE_URL==='PASTE_YOUR_SUPABASE_URL_HERE'){
       form.style.display='none';thanks.style.display='block';return;
     }
 
@@ -1049,6 +1141,105 @@ fetchLeaderboard();
 
   document.addEventListener('keydown',function(e){keys[e.key]=true;if(gameState==='playing'&&['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].indexOf(e.key)!==-1)e.preventDefault();});
   document.addEventListener('keyup',function(e){keys[e.key]=false;});
+
+/* ============================================================
+   LIGHTBOX — opens images & PDFs on-page, never a new tab
+   Usage:
+     Cover image:   class="card-img clickable" onclick="lbOpenSet(this,'cover')"
+     Subfolder img: data-lb-src="path.jpg" data-lb-caption="My caption"
+     Subfolder PDF: data-lb-pdf="path.pdf" data-lb-caption="My PDF"
+     onclick on subfolder-item: lbOpenSet(this.closest('.card-subfolder'), '0')
+============================================================ */
+(function(){
+  var lb=document.getElementById('lightbox');
+  var lbImg=document.getElementById('lightbox-img');
+  var lbPdf=document.getElementById('lightbox-pdf');
+  var lbCap=document.getElementById('lightbox-caption');
+  var lbCount=document.getElementById('lightbox-counter');
+  var lbClose=document.getElementById('lightbox-close');
+  var lbPrev=document.getElementById('lightbox-prev');
+  var lbNext=document.getElementById('lightbox-next');
+
+  var items=[];  // [{src, pdf, caption}]
+  var idx=0;
+
+  function showItem(i){
+    idx=i;
+    var item=items[i];
+    if(item.pdf){
+      lbImg.style.display='none';
+      lbPdf.style.display='block';
+      lbPdf.src=item.pdf;
+    } else {
+      lbPdf.style.display='none';
+      lbPdf.src='';
+      lbImg.style.display='block';
+      lbImg.src=item.src;
+      lbImg.alt=item.caption||'';
+    }
+    lbCap.textContent=item.caption||'';
+    lbCount.textContent=items.length>1?(i+1)+' / '+items.length:'';
+    lbPrev.classList.toggle('hidden',i===0);
+    lbNext.classList.toggle('hidden',i===items.length-1);
+  }
+
+  function open(newItems,startIdx){
+    items=newItems;
+    lb.classList.add('open');
+    document.body.style.overflow='hidden';
+    showItem(startIdx||0);
+  }
+
+  function close(){
+    lb.classList.remove('open');
+    document.body.style.overflow='';
+    lbImg.src='';lbPdf.src='';
+  }
+
+  lbClose.addEventListener('click',close);
+  lb.addEventListener('click',function(e){if(e.target===lb)close();});
+  lbPrev.addEventListener('click',function(){if(idx>0)showItem(idx-1);});
+  lbNext.addEventListener('click',function(){if(idx<items.length-1)showItem(idx+1);});
+  document.addEventListener('keydown',function(e){
+    if(!lb.classList.contains('open'))return;
+    if(e.key==='Escape')close();
+    if(e.key==='ArrowLeft'&&idx>0)showItem(idx-1);
+    if(e.key==='ArrowRight'&&idx<items.length-1)showItem(idx+1);
+  });
+
+  // Exposed globally so onclick handlers can call it
+  window.lbOpenSet=function(container,startKey){
+    var newItems=[];
+    var startIdx=0;
+
+    if(startKey==='cover'){
+      // container is the .card-img div itself — just open its <img>
+      var img=container.querySelector('img');
+      if(img)newItems.push({src:img.src,caption:img.alt||'Cover Image'});
+      open(newItems,0);
+      return;
+    }
+
+    // container is a .card-subfolder — collect all items
+    var els=container.querySelectorAll('.subfolder-item');
+    var clickedIdx=parseInt(startKey,10)||0;
+    els.forEach(function(el,i){
+      var img=el.querySelector('img');
+      var pdfSrc=img?img.getAttribute('data-lb-pdf'):el.querySelector('[data-lb-pdf]')&&el.querySelector('[data-lb-pdf]').getAttribute('data-lb-pdf');
+      var cap=img?img.getAttribute('data-lb-caption'):(el.querySelector('[data-lb-caption]')&&el.querySelector('[data-lb-caption]').getAttribute('data-lb-caption'))||el.textContent.trim();
+      var src=img?img.getAttribute('data-lb-src')||img.src:'';
+      // Check for PDF marker on subfolder-item itself
+      if(el.classList.contains('is-pdf')){
+        var pdfEl=el.querySelector('[data-lb-pdf]');
+        if(pdfEl){newItems.push({pdf:pdfEl.getAttribute('data-lb-pdf'),caption:pdfEl.getAttribute('data-lb-caption')||'Document'});}
+      } else if(src){
+        newItems.push({src:src,caption:cap});
+      }
+    });
+    if(!newItems.length)return;
+    open(newItems,Math.min(clickedIdx,newItems.length-1));
+  };
+})();
 
   initGame();showStart();loop();
 })();
